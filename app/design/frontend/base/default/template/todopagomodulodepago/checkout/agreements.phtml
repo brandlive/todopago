@@ -1,0 +1,14 @@
+<?php 
+
+$metodo_de_pago = $this->get_metodo_de_pago();
+if($metodo_de_pago=="modulodepago2"){
+	$checkout = Mage::getSingleton('checkout/session')->getQuote();
+	
+	
+	?>
+	<p></p>
+	<?php
+}
+	
+	
+?>

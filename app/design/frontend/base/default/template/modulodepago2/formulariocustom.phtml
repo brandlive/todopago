@@ -1,0 +1,78 @@
+  <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<div class="container-fluid">
+	<div class="col-lg-8 col-lg-offset-2 col-sm-4 col-md-offset-4 col-xs-12">      
+		
+		<h1>Payment Method</h1>
+		
+	</div>
+	<div class="row">
+		<div class="col-lg-8 col-lg-offset-2 col-sm-4 col-md-offset-4 col-xs-12">  
+			<div class="jumbotron">
+				<div class="container">
+					<form action="<?php echo Mage::getBaseUrl()."modulodepago2/payment/secondStep" ?>" method="POST" id="payform">
+						<div class="form-group">
+							<label for="cardNumber">Numero de Tarjeta</label>
+							<div class="input-group">
+								<div class="input-group-addon"><i class="glyphicon glyphicon-credit-card"></i></div>
+								<input type="number" class="form-control" id="cardNumber" placeholder="Ej.: 4444111144441111" required="required">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="name">Nombre</label>
+							<div class="input-group">
+								<div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+								<input type="text" class="form-control" id="name" placeholder="Ingrese su nombre" required="required">
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6 col-sm-6 col-xs-12">
+								<div class="form-group">
+									<label for="expired">Vencimiento</label>
+									<div class="input-group">
+										<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
+										<input type="number" class="form-control" id="expired" placeholder="MMAA" required="required">
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6 col-sm-6 col-xs-12">
+								<div class="form-group">
+									<label for="cvc">CVC</label>
+									<div class="input-group">
+										<div class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></div>
+										<input type="number" class="form-control" id="cvc" placeholder="Codigo de seguridad" required="required">
+									</div>
+								</div>
+							</div>
+						</div> 
+						<div class="form-group">
+							<label for="email">Email</label>
+							<div class="input-group">
+								<div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
+								<input type="email" class="form-control" id="email" placeholder="Ingrese su email" required="required">
+							</div>
+						</div>
+						<input type="hidden" name="idRquermient" id="idRquermient" value="XXX333" />
+						<button  type="submit" class="btn btn-primary col-xs-12">Pagar $AR <?php echo $this->get_amount() ?></button>
+					</form>
+				</div>    
+			</div>
+		</div>
+	</div>          
+</div>
+<script src="http://payment.com.ar/custom/1.0/payment.js"></script>
+<script>
+	new Payment().init({
+			formId: 'paymentForm',
+			fieldsId: {
+				cardHolderName: 'Nombre',
+				email:          'email',
+				cardNumber:     'NumeroTarjeta',
+				expirationDate: 'FechaExpiracion',
+				securityCode:   'cvc',
+				requestKey:     'ClavePago'
+			}
+		}); 
+</script>
+<h2></h2>

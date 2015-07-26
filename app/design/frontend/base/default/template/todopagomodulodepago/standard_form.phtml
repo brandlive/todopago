@@ -1,0 +1,12 @@
+<?php
+// /pasar todo al block
+$quoteid = Mage::getSingleton('checkout/session')->getQuoteId();
+$_code = $this->getMethodCode(); ?>
+<img src="<?php echo $this->getSkinUrl('images/modulodepago2/imagen-c-medios5.jpg'); ?>" alt="imagen_todopago" />
+<ul class="form-list" id="payment_form_<?php echo $_code; ?>"
+	style="display: none;">
+	
+	<input type="hidden" id="quote" name='payment[quote]'
+	value="<?php echo $quoteid ?>"></input>
+	<p>Al continuar con la compra, estarás ingresando a un sitio seguro de Todo Pago</p>
+</ul>
