@@ -6,7 +6,7 @@ class Todopago_Modulodepago2_Model_System_Config_Source_Csverticales {
 		return array (
 				
 				array (
-						'value' => 'Retail' ,
+						'value' =>  Todopago_Modulodepago2_Model_Cybersource_Factorycybersource::RETAIL ,
 						'label' => 'Retail' 
 				),
 // 				array (
@@ -14,15 +14,15 @@ class Todopago_Modulodepago2_Model_System_Config_Source_Csverticales {
 // 						'label' => 'Travel' 
 // 				),
 				array (
-						'value' => 'Services',
+						'value' => Todopago_Modulodepago2_Model_Cybersource_Factorycybersource::SERVICE,
 						'label' => 'Services' 
 				),
 				array (
-						'value' => 'Digital Goods' ,
+						'value' => Todopago_Modulodepago2_Model_Cybersource_Factorycybersource::DIGITAL_GOODS ,
 						'label' => 'Digital Goods' 
 				),
 				array (
-						'value' => 'Ticketing',
+						'value' => Todopago_Modulodepago2_Model_Cybersource_Factorycybersource::TICKETING,
 						'label' => 'Ticketing' 
 				) ,
 		);

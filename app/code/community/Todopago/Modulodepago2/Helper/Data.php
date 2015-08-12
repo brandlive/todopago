@@ -17,7 +17,7 @@ class Todopago_Modulodepago2_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 		if (strlen ( $numero_to_arrays [1] == 1 )) {
 			$numero_formateado = $numero_formateado . "0";
-		}   
+		}
 		return $numero_formateado;
 	}
 	public function diasTranscurridos($fecha_i, $fecha_f) {
@@ -30,7 +30,7 @@ class Todopago_Modulodepago2_Helper_Data extends Mage_Core_Helper_Abstract
 		$cs_category;
 		switch ($code_id) {
 			case "0":
-				$cs_category="no select";
+				$cs_category="default";
 				break;
 			case "1":
 				$cs_category="adult_content";
@@ -70,6 +70,7 @@ class Todopago_Modulodepago2_Helper_Data extends Mage_Core_Helper_Abstract
 				$cs_category="default";
 				break;
 		}
+		
 		return $cs_category;
 	}
 
