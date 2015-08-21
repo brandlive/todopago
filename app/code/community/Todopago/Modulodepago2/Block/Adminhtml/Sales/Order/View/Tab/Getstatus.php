@@ -33,11 +33,11 @@ class Todopago_modulodepago2_Block_Adminhtml_Sales_Order_View_Tab_Getstatus exte
 	public function getLastStatus(){
 		require_once(Mage::getBaseDir('lib') . '/metododepago2/TodoPago.php');
 		$wsdls = $this->get_wsdls();
-		
+
 		$http_header = $this->get_http_header();
-		
+
 		$end_point = $this->get_end_point();
-		
+
 		$connector = new TodoPago($http_header, $wsdls, $end_point);
 		$order_id =  $this->getRequest()->get('order_id');
 		$id = $this->getOrderIncrementId($order_id);
@@ -49,7 +49,8 @@ class Todopago_modulodepago2_Block_Adminhtml_Sales_Order_View_Tab_Getstatus exte
 		}
 
 		try{
-			return $connector->getStatus(array('MERCHANT'=>$merchant, 'OPERATIONID'=>$id));
+			$status = $connector->getStatus(array('MERCHANT'=>$merchant, 'OPERATIONID'=>$id));
+			return $status;
 		}
 		catch(Exception $e){
 			$exception['Operations']['Exception']="Error el consumir Web Service Todopago";
@@ -68,10 +69,12 @@ class Todopago_modulodepago2_Block_Adminhtml_Sales_Order_View_Tab_Getstatus exte
 
 	private function get_end_point(){
 		if(Mage::getStoreConfig('payment/modulodepago2/modo_test_prod') == "test"){
-			return  Mage::helper('modulodepago2/data')->getDevelopersEndpoint();
+			$end_point =   Mage::helper('modulodepago2/ambiente')->get_end_point();
 		} else{
-			return Mage::helper('modulodepago2/data')->getApisEndpoint();
+			$end_point =  Mage::helper('modulodepago2/ambiente')->get_end_point();
 		}
+		Mage::log("TP - ".__FILE__." => ".$end_point);
+		return $end_point;
 	}
 
 	private function get_wsdls(){

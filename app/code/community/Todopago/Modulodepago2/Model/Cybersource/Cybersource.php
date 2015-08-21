@@ -36,7 +36,7 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 		$payDataOperacion ['CSBTSTATE'] =  strtoupper(substr($this->getField($billingAdress->getRegion()),0,1));
 		$payDataOperacion ['CSBTSTREET1'] = $this->getField($billingAdress->getStreet1());
 		$payDataOperacion ['CSBTSTREET2'] = $this->getField($billingAdress->getStreet2());
-		$payDataOperacion ['CSPTCURRENCY'] = $this->getField($this->order->getBaseCurrencyCode());
+		$payDataOperacion ['CSPTCURRENCY'] = 'ARS';//$this->getField($this->order->getBaseCurrencyCode());
 		$payDataOperacion ['CSPTGRANDTOTALAMOUNT'] = number_format($this->order->getGrandTotal(), 2, ".", "");
 		$payDataOperacion ['CSMDD6'] = Mage::getStoreConfig('payment/modulodepago2/cs_canaldeventa');
 		$date = Mage::getModel('core/date');
@@ -71,11 +71,11 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 		$string = str_replace($replace, '', $string);
 
 		$cods = array('\u00c1','\u00e1','\u00c9','\u00e9','\u00cd','\u00ed','\u00d3','\u00f3','\u00da','\u00fa','\u00dc','\u00fc','\u00d1','\u00f1');
-		$susts = array('Á','á','É','é','Í','í','Ó','ó','Ú','ú','Ü','ü','Ṅ','ñ');
+		$susts = array('Á','á','É','é','Í','í','Ó','ó','Ú','ú','Ü','ü','Ñ','ñ');
 		$string = str_replace($cods, $susts, $string);
 
-		$no_permitidas= array ("á","é","í","ó","ú","Á","É","Í","Ó","Ú","ñ","À","Ã","Ì","Ò","Ù","Ã™","Ã ","Ã¨","Ã¬","Ã²","Ã¹","ç","Ç","Ã¢","ê","Ã®","Ã´","Ã»","Ã‚","ÃŠ","ÃŽ","Ã”","Ã›","ü","Ã¶","Ã–","Ã¯","Ã¤","«","Ò","Ã","Ã„","Ã‹");
-		$permitidas= array ("a","e","i","o","u","A","E","I","O","U","n","N","A","E","I","O","U","a","e","i","o","u","c","C","a","e","i","o","u","A","E","I","O","U","u","o","O","i","a","e","U","I","A","E");
+		$no_permitidas= array ("À","Ã","Ì","Ò","Ù","Ã™","Ã ","Ã¨","Ã¬","Ã²","Ã¹","ç","Ç","Ã¢","ê","Ã®","Ã´","Ã»","Ã‚","ÃŠ","ÃŽ","Ã”","Ã›","ü","Ã¶","Ã–","Ã¯","Ã¤","«","Ò","Ã","Ã„","Ã‹");
+		$permitidas= array    ("A","E","I","O","U","a","e","i","o","u","c","C","a","e","i","o","u","A","E","I","O","U","u","o","O","i","a","e","U","I","A","E");
 		$string = str_replace($no_permitidas, $permitidas ,$string);
 
 		return $string;
@@ -98,10 +98,18 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 		$price_array = array();
 
 		foreach($productos as $item){
+/////
+			$cats = Mage::getModel('catalog/product')->load($item->getProductId())->getCategoryIds();
 
-			$product_id = Mage::getModel('catalog/product')->load($item->getProductId())->getTodopagocodigo();
-			$productcode_array[] = $this->getCategoryArray($productId);
+			$cat_id = $cats[0];
+			$category = Mage::getModel('catalog/category')->load($cat_id);
 
+			if ($category->getName()){
+				$productcode_array[] = $category->getName();
+			}else {
+				$productcode_array[] = "default";
+			}
+////
 			$_description = Mage::getModel('catalog/product')->load($item->getProductId())->getDescription();
 			$_description = $this->getField($_description);
 			$_description = trim($_description);
@@ -115,7 +123,7 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 			$sku_array [] = $this->getField($sku);
 
 			$product_quantity = $item->getQtyOrdered();
-			$product_price = $item->getPrice();
+			$product_price = number_format($item->getPrice(),2, ".", "");
 			$product_amount = number_format($product_quantity * $product_price, 2, ".", "");
 			$totalamount_array[] = $product_amount;
 

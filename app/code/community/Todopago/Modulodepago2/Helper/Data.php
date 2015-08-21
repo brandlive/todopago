@@ -6,7 +6,7 @@ class Todopago_Modulodepago2_Helper_Data extends Mage_Core_Helper_Abstract
 	}
 
 	public function getApisEndpoint(){
-		return 'https://apis.todopago.com.ar/services/t/1.1/';
+		return 'https://apis.todopago.com.ar/services/';
 	}
 
     public function getFormatoNumero($numero) {

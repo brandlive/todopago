@@ -74,6 +74,12 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
 
             $first_step = $todopago_connector->sendAuthorizeRequest($payDataComercio, $payDataOperacion);
 
+            if($first_step["StatusCode"] == 702){
+                Mage::log("Modulo de pago - TodoPago ==> respuesta de sendAuthorizeRequest --> reintento SAR");
+                $first_step = $todopago_connector->sendAuthorizeRequest($payDataComercio, $payDataOperacion);
+            }
+
+
             Mage::log("Modulo de pago - TodoPago ==> respuesta de sendAuthorizeRequest -->".json_encode($first_step));
 
             $order->setData('todopagoclave', $first_step ['RequestKey']);
@@ -84,6 +90,7 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
             $todopagotable->setRequestKey($first_step ['RequestKey']);
             $todopagotable->setSendauthorizeanswerStatus(Mage::getModel('core/date')->date('Y-m-d H:i:s')." - ".$first_step["StatusCode"]." - ".$first_step['StatusMessage']);
             $todopagotable->save();
+
             if($first_step["StatusCode"] == -1){
 
                 if(Mage::getStoreConfig('payment/modulodepago2/modo_test_prod') == "test"){
@@ -118,14 +125,14 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
             }
 
         } catch(Exception $e){
-           Mage::logException($e);
+           Mage::log("Modulo de pago - TodoPago ==> (Exception)".$e);
            Mage::log("Modulo de pago - TodoPago ==> Exception: ");
            if(Mage::getStoreConfig('payment/modulodepago2/modo_test_prod') == "test"){
             $order->setStatus('test_todopago_canceled');
             $order->addStatusHistoryComment("Todo Pago (TEST)(Exception): " . $e);
         } else{
             $order->setStatus(Mage::getStoreConfig('payment/todopago_avanzada/estado_denegada'));
-            $order->addStatusHistoryComment("Todo Pago (Exception): " . $e);
+            $order->addStatusHistoryComment("Modulo de pago - TodoPago ==> (Exception)" . $e);
         }
         $order->save();
         Mage::log("Modulo de pago - TodoPago ==> redirige a: checkout/onepage/failure");
