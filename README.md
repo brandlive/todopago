@@ -24,7 +24,7 @@ La versión de este plug in esta testeada en PHP 5.3-5.4-5.6 y MAGENTO 1.8-1.9.
 4.	Luego ir a 'setting->configuration->payment method' y configurar desde la pestaña de <strong>Todo Pago</strong>.
 
 Observaci&oacute;n:
-Descomentar: <em>extension=php_soap.dll</em> del php.ini, ya que para la conexión al gateway se utiliza la clase <em>SoapClient</em> del API de PHP.
+Descomentar: <em>extension=php_soap.dll</em> y <em>extension=php_openssl.dll</em> del php.ini, ya que para la conexión al gateway se utiliza la clase <em>SoapClient</em> del API de PHP.
 <br />
 [<sub>Volver a inicio</sub>](#inicio)
 
