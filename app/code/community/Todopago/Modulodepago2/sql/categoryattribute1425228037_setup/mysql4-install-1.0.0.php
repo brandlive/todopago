@@ -1,6 +1,9 @@
 <?php
 $installer = $this;
- 
+
+/** COMENTO LA CREACION DE NUEVOS ESTADOS DE ORDENES**/
+/* 
+
 // Required tables
 $statusTable = $installer->getTable('sales/order_status');
 $statusStateTable = $installer->getTable('sales/order_status_state');
@@ -58,4 +61,6 @@ $installer->getConnection()->insertArray(
         )
     )
 );
+
+*/
 	 

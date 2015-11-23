@@ -19,6 +19,10 @@ $installer->run($sql);
 
 
 $installer->addAttribute("order", "todopagoclave", array("type"=>"varchar"));
+
+
+/** COMENTO  CREACION DE ATRIBUTO CELULAR**/
+/*
 $installer->addAttribute("customer", "celular",  array(
     "type"     => "varchar",
     "backend"  => "",
@@ -51,6 +55,6 @@ $used_in_forms[]="adminhtml_checkout";
 		;
         $attribute->save();
 
-        
+*/      
 $installer->endSetup();
 	 

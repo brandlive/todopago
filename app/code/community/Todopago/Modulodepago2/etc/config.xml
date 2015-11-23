@@ -2,7 +2,7 @@
 <config>
   <modules>
     <Todopago_Modulodepago2>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </Todopago_Modulodepago2>
   </modules>
   <global>
@@ -95,16 +95,16 @@
       </salesattribute1416425150_read>
     </resources>
   </global>
-  <admin>
-    <routers>
-      <modulodepago2>
-        <use>admin</use>
-        <args>
-          <module>Todopago_Modulodepago2</module>
-          <frontName>admin_modulodepago2</frontName>
-        </args>
-      </modulodepago2>
-    </routers>
+<admin>
+	<routers>
+		<adminhtml>
+			<args>
+				<modules>
+					<custom_module after="Mage_Adminhtml">Todopago_Modulodepago2_Adminhtml</custom_module>
+				</modules>
+			</args>
+		</adminhtml>
+	</routers>
   </admin>
   <adminhtml>
     <layout>

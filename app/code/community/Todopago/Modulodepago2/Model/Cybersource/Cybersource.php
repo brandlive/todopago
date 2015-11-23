@@ -101,12 +101,16 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 /////
 			$cats = Mage::getModel('catalog/product')->load($item->getProductId())->getCategoryIds();
 
-			$cat_id = $cats[0];
-			$category = Mage::getModel('catalog/category')->load($cat_id);
+			if(count($cats) > 0) {
+				$cat_id = $cats[0];
+				$category = Mage::getModel('catalog/category')->load($cat_id);
 
-			if ($category->getName()){
-				$productcode_array[] = $category->getName();
-			}else {
+				if ($category->getName()){
+					$productcode_array[] = $category->getName();
+				} else {
+					$productcode_array[] = "default";
+				}				
+			} else {
 				$productcode_array[] = "default";
 			}
 ////

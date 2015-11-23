@@ -14,17 +14,17 @@ Plug in para la integración con gateway de pago <strong>Todo Pago</strong>
 <a name="consideracionesgenerales"></a>
 ## Consideraciones Generales
 El plug in de pagos de <strong>Todo Pago</strong>, provee a las tiendas Magento de un nuevo m&eacute;todo de pago, integrando la tienda al gateway de pago.
-La versión de este plug in esta testeada en PHP 5.3-5.4-5.6 y MAGENTO 1.8-1.9.
+La versión de este plug in esta testeada en PHP 5.3 en adelante y MAGENTO 1.7 a 1.9
 
 <a name="instalacion"></a>
 ## Instalación
 1. Descomprimir el archivo magento-plugin-master.zip. 
 2.	Copiar carpeta 'app', 'js', 'skin' y 'lib' al root de magento con los mismos nombres.
 3.	Ir a  System->Cache Managment y refrescar el cache.
-4.	Luego ir a 'setting->configuration->payment method' y configurar desde la pestaña de <strong>Todo Pago</strong>.
+4.	Luego ir a 'Setting->Configuration->Payment Methods' y configurar desde la pestaña de <strong>Todo Pago</strong>.
 
 Observaci&oacute;n:
-Descomentar: <em>extension=php_soap.dll</em> y <em>extension=php_openssl.dll</em> del php.ini, ya que para la conexión al gateway se utiliza la clase <em>SoapClient</em> del API de PHP.
+Descomentar: <em>extension=php_curl.dll</em>, <em>extension=php_soap.dll</em> y <em>extension=php_openssl.dll</em> del php.ini, ya que para la conexión al gateway se utiliza la clase <em>SoapClient</em> del API de PHP.
 <br />
 [<sub>Volver a inicio</sub>](#inicio)
 
@@ -34,7 +34,7 @@ Descomentar: <em>extension=php_soap.dll</em> y <em>extension=php_openssl.dll</em
 [configuración plug in](#confplugin).
 <a name="confplugin"></a>
 ####Configuración plug in
-Para llegar al menu de configuración ir a: <em>System->Configuration</em> y seleccionar Paymenth Method en el menú izquierdo. Entre los medios de pago aparecerá una solapa con el nombre <strong>Todo Pago</strong>. El Plug-in esta separado en configuarción general y 3 sub-menues.<br />
+Para llegar al menu de configuración ir a: <em>System->Configuration</em> y seleccionar Paymenth Methods en el menú izquierdo. Entre los medios de pago aparecerá una solapa con el nombre <strong>Todo Pago</strong>. El Plug-in esta separado en configuarción general y 3 sub-menues.<br />
 <sub><em>Menú principal</em></sub>
 ![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/menu_todopago.PNG)
 <sub><em>Menú ambiente</em></sub>
@@ -148,7 +148,7 @@ El plug in crea un nuevo <strong>tab</strong> para poder consultar <strong>on li
 <tr><td>Chubut</td><td>U</td></tr>
 <tr><td>Córdoba</td><td>X</td></tr>
 <tr><td>Corrientes</td><td>W</td></tr>
-<tr><td>Entre Ríos</td><td>R</td></tr>
+<tr><td>Entre Ríos</td><td>E</td></tr>
 <tr><td>Formosa</td><td>P</td></tr>
 <tr><td>Jujuy</td><td>Y</td></tr>
 <tr><td>La Pampa</td><td>L</td></tr>
@@ -181,7 +181,7 @@ VALUES
 ('490' , 'AR', 'U', 'Chubut'),
 ('491' , 'AR', 'X', 'Cordoba'),
 ('492' , 'AR', 'W', 'Corrientes'),
-('493' , 'AR', 'R', 'Entre Rios'),
+('493' , 'AR', 'E', 'Entre Rios'),
 ('494' , 'AR', 'P', 'Formosa'),
 ('495' , 'AR', 'Y', 'Jujuy'),
 ('496' , 'AR', 'L', 'La Pampa'),

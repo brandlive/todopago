@@ -8,7 +8,7 @@ class Todopago_Modulodepago2_Model_System_Config_Source_Testproduccion {
 				array (
 						//cambiar el value a test
 						'value' => 'test',
-						'label' => 'Developers' 
+						'label' => 'developers' 
 				),
 				array (
 						'value' => 'produccion',

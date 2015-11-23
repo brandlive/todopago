@@ -4,7 +4,7 @@
 		<payment>
 			<groups>
 				<modulodepago2 translate="label comment" module="paygate">
-					<label>Todo Pago v1.0.2</label>
+					<label>Todo Pago v1.0.3</label>
 					<front-end>text</front-end>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -23,9 +23,8 @@
 						</active>
 
 						<header_http>
-							<comment>se deben para datos en formato json. ejemplo: {
-								"Authorization":"PRISMA 912EC803B2CE49E4A541068D495AB570"}</comment>
-								<label>Authorization HTTP</label>
+							<comment>Ingresar el contenido del campo API Keys (Credenciales) del Portal de TodoPago. Ejemplo: "PRISMA 912EC803B2CE49E4A541068D495AB570"</comment>
+								<label>API Keys</label>
 								<frontend_type>text</frontend_type>
 								<sort_order>15</sort_order>
 								<show_in_default>1</show_in_default>
@@ -76,7 +75,7 @@
 
 							<modo_test_prod translate="label">
 								<comment>Debe ser cofigurado en CONFIGURACION - AMBIENTE DEVELOPERS / PRODUCCION</comment>
-								<label>Modo developers o Producción</label>
+								<label>Ambiente Developers o Producción</label>
 								<frontend_type>select</frontend_type>
 								<source_model>modulodepago2/system_config_source_testproduccion</source_model>
 								<sort_order>50</sort_order>
@@ -102,7 +101,7 @@
 										<show_in_store>1</show_in_store>
 									</label_produccion>
 									<idstore>
-										<label>Id Site Todo Pago</label>
+										<label>Nro. de Comercio - Merchant ID</label>
 										<validate>validate-length maximum-length-8
 										</validate>
 										<comment>Número de Comercio provisto por Todo Pago</comment>
@@ -114,7 +113,7 @@
 									</idstore>
 									<codigo_seguridad>
 										<label>Security code</label>
-										<comment>Código provisto por Todo Pago</comment>
+										<comment>API Keys sin PRISMA/TODOPAGO y sin espacio</comment>
 										<frontend_type>password</frontend_type>
 										<sort_order>85</sort_order>
 										<show_in_default>1</show_in_default>
@@ -122,7 +121,7 @@
 										<show_in_store>1</show_in_store>
 									</codigo_seguridad>
 									<label_test>
-										<label><![CDATA[<b><u>Ambiente developers:
+										<label><![CDATA[<b><u>Ambiente Developers:
 										</b></u>]]></label>
 										<frontend_type>label</frontend_type>
 										<sort_order>86</sort_order>
@@ -132,7 +131,7 @@
 									</label_test>
 
 									<idstore_test>
-										<label>Id Site Todo Pago (developers)</label>
+										<label>Nro. de Comercio - Merchant ID (Developers)</label>
 										<validate>validate-length  maximum-length-8
 										</validate>
 										<comment>Número de Comercio provisto por Todo Pago</comment>
@@ -144,8 +143,8 @@
 									</idstore_test>
 
 									<codigo_seguridad_test>
-										<label>Security code (developers)</label>
-										<comment>Código provisto por Todo Pago</comment>
+										<label>Security code (Developers)</label>
+										<comment>API Keys sin PRISMA/TODOPAGO y sin espacio</comment>
 										<frontend_type>password</frontend_type>
 										<sort_order>90</sort_order>
 										<show_in_default>1</show_in_default>
@@ -181,7 +180,7 @@
 										</label>
 										<comment>Estado final de la informado por el medio de pago</comment>
 										<frontend_type>select</frontend_type>
-										<source_model>adminhtml/system_config_source_order_status
+										<source_model>modulodepago2/system_config_source_processingstatuses
 										</source_model>
 										<sort_order>520</sort_order>
 										<show_in_default>1</show_in_default>
@@ -230,6 +229,7 @@
 
 							</fields>
 						</todopago_avanzada>
+												
 						<todopago_servicio translate="label" type="group">
 							<label>CONFIGURACION - SERVICIO</label>
 							<frontend_type>text</frontend_type>
@@ -241,7 +241,6 @@
 								<settimeoutvalue translate="label">
 									<label>Time Out del Servicio de Pago
 									</label>
-									<comment>hacer comentario acá</comment>
 									<frontend_type>text</frontend_type>
 									<sort_order>610</sort_order>
 									<show_in_default>1</show_in_default>
