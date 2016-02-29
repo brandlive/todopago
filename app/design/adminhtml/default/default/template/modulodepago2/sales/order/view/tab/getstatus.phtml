@@ -14,7 +14,7 @@
 				echo "<p>Status en ambiente de test</p>";
 			}
 			$status = $this->getLastStatus();
-			if(isset($status['Operations'])) {
+			if(isset($status['Operations'])&&is_array($status['Operations'])) {
 				foreach ($status['Operations'] as $key => $value) {
 					if(is_array($value)) {
 						echo "<tr><td><strong>$key: </strong></td><td>".implode(" - ",$value)."</td></tr>";

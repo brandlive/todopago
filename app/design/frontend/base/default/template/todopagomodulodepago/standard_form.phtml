@@ -9,4 +9,60 @@ $_code = $this->getMethodCode(); ?>
 	<input type="hidden" id="quote" name='payment[quote]'
 	value="<?php echo $quoteid ?>"></input>
 	<p>Al continuar con la compra, estarás ingresando a un sitio seguro de Todo Pago</p>
+<style>
+#overlay{width:100%;background:#000; text-align:center; opacity:1; position:absolute;top:0px;z-index:1000; padding 20px;}
+#lightbox{width:35%; height:75%;text-align:center; position:relative; top:30px; z-index:1001;background:#FFF;margin: 0px auto;}
+#lightbox a{cursor:pointer; color:#fff; position:relative; display:block;}
+</style>
+<?php if(Mage::getStoreConfig('payment/modulodepago2/hibrido') == 1): ?>
+<script type="text/javascript">
+originalSave = Review.prototype.save;
+payment.watch("currentMethod",function(a,b,c){
+	if(c == "modulodepago2") {
+		Review.prototype.save = Review.prototype.save.wrap(function(save) {
+			if (checkout.loadWaiting!=false) return;
+			checkout.setLoadWaiting('review');
+			var params = Form.serialize(payment.form);
+			if (this.agreementsForm) {
+				params += '&'+Form.serialize(this.agreementsForm);
+			}
+			params.save = true;
+			var request = new Ajax.Request(
+				this.saveUrl,
+				{
+					method:'post',
+					parameters:params,
+					onComplete: this.onComplete,
+					onSuccess: function(data) {
+						redirectUrl = data.responseText.evalJSON().redirect
+						var requestSAR = new Ajax.Request(
+							redirectUrl,
+							{
+								method:'get',
+								onSuccess: function(a) {
+									var body = document.body,
+										html = document.documentElement;
+
+									var height = Math.max( body.scrollHeight, body.offsetHeight, 
+														   html.clientHeight, html.scrollHeight, html.offsetHeight );
+									$$('body > .wrapper')[0].insert("<div id='overlay'></div>");
+									$('overlay').setStyle({'height':height+'px'});
+									new Effect.Opacity('overlay',{from:0.0,to:1.0,duration:0.3,transition:Effect.Transitions.sinoidal,afterFinish:function(){
+											$('overlay').insert("<div id='lightbox'></div>");
+											$('lightbox').insert('<iframe width="100%" height="100%" src="'+a.responseText.evalJSON().url+'"></iframe>');
+									}});
+								}
+							}
+						);
+					},
+					onFailure: checkout.ajaxFailure.bind(checkout)
+				}
+			);
+		});
+	} else {
+		Review.prototype.save = originalSave;
+	}
+});
+</script>
+<?php endif; ?>
 </ul>

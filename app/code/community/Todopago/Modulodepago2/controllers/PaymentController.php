@@ -2,9 +2,10 @@
 class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Front_Action{
 
 	public function notificationAction() {
+        Mage::log("init: ".__METHOD__);
 		$order_id = $this->getRequest()->get('Order');
 		$answer_key = $this->getRequest()->get('Answer');
-		
+
 		$todopagotable = new Todopago_Modulodepago2_Model_Todopagotable();
 		$transaccion = $todopagotable->load($order_id,"order_id");
 		
@@ -22,12 +23,22 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
 	
     // este m�todo recolecta los datos b�sicos para realizar la primera transacci�n con el gateway
     public function getPayDataAction(){
+        Mage::log("init: ".__METHOD__);
+
+        $magento_version = Mage::getVersion();
+        $php_version = phpversion();
+        Mage::log("[Mag:$magento_version - php: $php_version] ".$message );
+        
 
         $id = Mage::getSingleton('checkout/session')
         ->getLastRealOrderId();
 
+        Mage::log(__METHOD__." OPERATIONID: ".$id);
+		
         $order = Mage::getSingleton('sales/order')
         ->loadByIncrementId($id);
+
+        
         $productos = $order->getItemsCollection();
 
         $customer_id = $order->getCustomerId();
@@ -67,7 +78,8 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
     }
 
     public function setCelularAction()
-    {
+    {   
+        Mage::log("init: ".__METHOD__);
         $quote_id = $this->getRequest()->get($quote_id);
         $celular = $this->getRequest()->get($celular);
         $checkout = Mage::getSingleton('checkout/session')->getQuote();
@@ -77,11 +89,14 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
 
     public function firstStep($payDataComercio, $payDataOperacion){
         /*COMENTO LAS PARTES DONDE SE UTILIZAN LOS ESTADOS CREADOS POR EL MODULO*/
-
+        Mage::log("init: ".__METHOD__);
+        
         $order = new Mage_Sales_Model_Order ();
         $order->loadByIncrementId($payDataOperacion ['OPERATIONID']);
 
         try{
+            
+            Mage::log(__METHOD__."<-- try - OPERATIONID: ".$payDataOperacion ['OPERATIONID']);
 			$todopago_connector = Mage::helper('modulodepago2/connector')->getConnector();
 			
             Mage::log("Modulo de pago - TodoPago ==> payDataComercio --> ".json_encode($payDataComercio));
@@ -103,6 +118,7 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
             $todopagotable->setSendauthorizeanswerStatus(Mage::getModel('core/date')->date('Y-m-d H:i:s')." - ".$first_step["StatusCode"]." - ".$first_step['StatusMessage']);    
 
             if($first_step["StatusCode"] == -1){
+                Mage::log("StatusCode = -1 - OPERATIONID".$payDataOperacion ['OPERATIONID']);
 				$todopagotable->setRequestKey($first_step['RequestKey']);
 				$todopagotable->save(); 
 				$order->setData('todopagoclave', $first_step['RequestKey']);
@@ -121,9 +137,21 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
                 
                 $order->save();
                 Mage::log("Modulo de pago - TodoPago ==> redirige a: ".$first_step['URL_Request']);
+				if(Mage::getStoreConfig('payment/modulodepago2/hibrido') == 1) {
+					
+					$url = Mage::getUrl('modulodepago2/formulariocustom/index', array(
+						'_secure' => true,
+						'order' =>  $order->getIncrementId(),
+						'requestKey' => $first_step['PublicRequestKey'],
+						));
+					echo '{"url":"'.$url.'"}';
+					return;
+				}
                 $this->_redirectUrl($first_step['URL_Request']);
 
             } else{
+                Mage::log("StatusCode != -1 - OPERATIONID".$payDataOperacion ['OPERATIONID']);
+                
                 $status = Mage::getStoreConfig('payment/todopago_avanzada/estado_denegada');
                 $state = $this->_get_new_order_state($status);
                 if(Mage::getStoreConfig('payment/modulodepago2/modo_test_prod') == "test"){                
@@ -140,8 +168,8 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
             }
 
         } catch(Exception $e){
-            Mage::log("Modulo de pago - TodoPago ==> (Exception)".$e);
-            Mage::log("Modulo de pago - TodoPago ==> Exception: ");
+            Mage::log("catch : ".__METHOD__);
+            Mage::log("Modulo de pago - TodoPago - OPERATIONID: ".$payDataOperacion['OPERATIONID']."==> (Exception)".json_encode($e));
             
 
             $status = Mage::getStoreConfig('payment/todopago_avanzada/estado_denegada');
@@ -157,11 +185,11 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
             $order->save();
             Mage::log("Modulo de pago - TodoPago ==> redirige a: checkout/onepage/failure");
             Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/failure', array('_secure' => true));
-
     }
 }
 
 public function secondStepAction(){
+    Mage::log("init: ".__METHOD__);
     $todopagotable = new Todopago_Modulodepago2_Model_Todopagotable();
     $todopagotable->load($this->getRequest()->get('Order'), "order_id");
     if($todopagotable->getAnswerKey() == null){
@@ -173,7 +201,7 @@ public function secondStepAction(){
 
 public function lastStep($order_key, $answer_key){
     /*COMENTO LAS PARTES DONDE SE UTILIZAN LOS ESTADOS CREADOS POR EL MODULO*/
-
+    Mage::log("init: ".__METHOD__);
 	$todopago_connector = Mage::helper('modulodepago2/connector')->getConnector();
 	
         // /a este metodo es al que me va a devolver el gateway en caso que todo salga ok
@@ -201,7 +229,7 @@ public function lastStep($order_key, $answer_key){
     Mage::log("Modulo de pago - TodoPago ==> secondStep (".$order_key.") - AnswerKey: ".json_encode($optionsAnswer));
 
     try{
-
+        Mage::log("try ".__METHOD__);
         $second_step = $todopago_connector->getAuthorizeAnswer($optionsAnswer);
         Mage::log("Modulo de pago - TodoPago ==> secondStep (".$order_key.") - second_step: ".json_encode($second_step));
 
@@ -236,15 +264,36 @@ public function lastStep($order_key, $answer_key){
         elseif($second_step['StatusCode'] == -1){
             $status = Mage::getStoreConfig('payment/todopago_avanzada/order_aprov');
             $state = $this->_get_new_order_state($status);
-            if(Mage::getStoreConfig('payment/modulodepago2/modo_test_prod') == "test"){
-                
+            if(Mage::getStoreConfig('payment/modulodepago2/modo_test_prod') == "test"){ 
                 $message = "Todo Pago (TEST): " . $second_step['StatusMessage'];
             } else{                
                 $message = "Todo Pago: " . $second_step['StatusMessage'];
             }
             $order->setState($state, $status, $message);
             $order->sendNewOrderEmail();
-            $order->save();
+			
+			$payment = $order->getPayment();
+			$payment->setTransactionId($second_step['AuthorizationKey']);
+			$payment->setParentTransactionId($payment->getTransactionId());
+			$transaction = $payment->addTransaction(Mage_Sales_Model_Order_Payment_Transaction::TYPE_CAPTURE, null, true, "");
+			$transaction->setIsClosed(true);
+			$transaction->save();
+			$payment->save();
+            
+			$order->save();
+			
+			$invoice = $order->prepareInvoice()
+                   ->setTransactionId(1)
+                   ->addComment("Invoice created.")
+				   ->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE)
+                   ->register()
+                   ->pay();
+			
+			Mage::getModel('core/resource_transaction')
+				->addObject($invoice)
+				->addObject($invoice->getOrder())
+				->save();
+
             Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/success', array('_secure' => true));
         }
         //caso de transaccion no aprobada
@@ -263,6 +312,8 @@ public function lastStep($order_key, $answer_key){
             Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/failure', array('_secure' => true));            }
         }
         catch(Exception $e){
+            Mage::log("catch : ".__METHOD__);
+                
             $status = Mage::getStoreConfig('payment/todopago_avanzada/estado_denegada');
             $state = $this->_get_new_order_state($status);    
             if(Mage::getStoreConfig('payment/modulodepago2/modo_test_prod') == "test"){                
@@ -278,12 +329,12 @@ public function lastStep($order_key, $answer_key){
     }
 
     public function urlerrorAction(){
-
+        Mage::log("init: ".__METHOD__);
         // este m�to es al que me dva a devolder el gateway en caso que algo salga mal
         $order_id = $this->getRequest()->get('Order');
-        Mage::log("Modulo de pago - TodoPago ==> urlerror - orderid: ".$order_id);
+        Mage::log(__METHOD__." Modulo de pago - TodoPago ==> urlerror - orderid: ".$order_id);
         $answer = $this->getRequest()->get('Answer');
-        Mage::log("Modulo de pago - TodoPago ==> urlerror - AnswerKey: ".$answer);
+        Mage::log(__METHOD__." Modulo de pago - TodoPago ==> urlerror - AnswerKey: ".$answer);
 
         $order = new Mage_Sales_Model_Order ();
         $order->loadByIncrementId($order_id);
@@ -294,7 +345,7 @@ public function lastStep($order_key, $answer_key){
         if(Mage::getStoreConfig('payment/modulodepago2/modo_test_prod') == "test"){        
             $message = "Todo Pago (TEST): error en el pago del formulario";
         } else{            
-            $message = "Todo Pago: error en el pago del formulario";
+            $message = "OPERATIONID: $order_id - Todo Pago: error en el pago del formulario";
         }
         $order->setState($state, $status, $message);        
         $order->save();
@@ -302,14 +353,18 @@ public function lastStep($order_key, $answer_key){
     }
 
     private function redirect_first($cart_array){
+        Mage::log("init: ".__METHOD__);
         Mage_Core_Controller_Varien_Action::_redirect('modulodepago2/formulariocustom/insite',
           array('_secure' => true, 'amount'=>$cart_array['Amount'])
           );
     }
 
     protected function _get_new_order_state($status){
-        $statuses  = Mage::getResourceModel('sales/order_status_collection')->joinStates()->addFieldToFilter('main_table.status', $status)->getFirstItem();                         
-        $state = $statuses->getState();
+        Mage::log("init: ".__METHOD__);
+        $statuses  = Mage::getResourceModel('sales/order_status_collection')->joinStates()->addFieldToFilter('main_table.status', $status)->addFieldToFilter('is_default', 1)->getFirstItem();                         
+		if(count($statuses->getData()) == 0)
+			$statuses  = Mage::getResourceModel('sales/order_status_collection')->joinStates()->addFieldToFilter('main_table.status', $status)->getFirstItem();                         
+		$state = $statuses->getState();
         
         return $state;
     }

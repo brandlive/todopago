@@ -1,78 +1,169 @@
-  <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-
-<div class="container-fluid">
-	<div class="col-lg-8 col-lg-offset-2 col-sm-4 col-md-offset-4 col-xs-12">      
-		
-		<h1>Payment Method</h1>
-		
-	</div>
-	<div class="row">
-		<div class="col-lg-8 col-lg-offset-2 col-sm-4 col-md-offset-4 col-xs-12">  
-			<div class="jumbotron">
-				<div class="container">
-					<form action="<?php echo Mage::getBaseUrl()."modulodepago2/payment/secondStep" ?>" method="POST" id="payform">
-						<div class="form-group">
-							<label for="cardNumber">Numero de Tarjeta</label>
-							<div class="input-group">
-								<div class="input-group-addon"><i class="glyphicon glyphicon-credit-card"></i></div>
-								<input type="number" class="form-control" id="cardNumber" placeholder="Ej.: 4444111144441111" required="required">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="name">Nombre</label>
-							<div class="input-group">
-								<div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
-								<input type="text" class="form-control" id="name" placeholder="Ingrese su nombre" required="required">
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-lg-6 col-sm-6 col-xs-12">
-								<div class="form-group">
-									<label for="expired">Vencimiento</label>
-									<div class="input-group">
-										<div class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></div>
-										<input type="number" class="form-control" id="expired" placeholder="MMAA" required="required">
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-6 col-sm-6 col-xs-12">
-								<div class="form-group">
-									<label for="cvc">CVC</label>
-									<div class="input-group">
-										<div class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></div>
-										<input type="number" class="form-control" id="cvc" placeholder="Codigo de seguridad" required="required">
-									</div>
-								</div>
-							</div>
-						</div> 
-						<div class="form-group">
-							<label for="email">Email</label>
-							<div class="input-group">
-								<div class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></div>
-								<input type="email" class="form-control" id="email" placeholder="Ingrese su email" required="required">
-							</div>
-						</div>
-						<input type="hidden" name="idRquermient" id="idRquermient" value="XXX333" />
-						<button  type="submit" class="btn btn-primary col-xs-12">Pagar $AR <?php echo $this->get_amount() ?></button>
-					</form>
-				</div>    
-			</div>
-		</div>
-	</div>          
-</div>
-<script src="http://payment.com.ar/custom/1.0/payment.js"></script>
+<script src="https://developers.todopago.com.ar/resources/TPHybridForm-v0.1.js"></script>
+<script src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS).'modulodepago2/jquery.js'; ?>"></script>
 <script>
-	new Payment().init({
-			formId: 'paymentForm',
-			fieldsId: {
-				cardHolderName: 'Nombre',
-				email:          'email',
-				cardNumber:     'NumeroTarjeta',
-				expirationDate: 'FechaExpiracion',
-				securityCode:   'cvc',
-				requestKey:     'ClavePago'
+	jQuery(document).ready(function() {
+		jQuery("#formaDePagoCbx").change(function () {
+			if(this.value == 500 || this.value == 501){
+				jQuery(".spacer").hide();
+			}else{
+				jQuery(".spacer").show();
 			}
-		}); 
+		})
+		jQuery("#tp-bt-wrapper").click(function(e){
+			jQuery("input,select").removeClass("error");
+			jQuery("span.error").html("");
+			//TPFORMAPI.hybridForm.handlePayment();
+			//e.preventDefault();
+		})
+	});
 </script>
-<h2></h2>
+<link rel="stylesheet" href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN)."/frontend/base/default/css/modulodepago2/form.css";?>">
+</head>
+<body>
+	<div class="contentContainer main" style="width: auto">
+		<div id="tp-form-tph" class="left">
+			<div id="tp-logo"></div>
+			<div id="tp-content-form fieldset"><br/>
+				<div class="field">
+					<label for="formaDePagoCbx" class="tp-label required"><em>*</em>Medio de Pago</label>
+					<div class="input-box">
+						<select id="formaDePagoCbx"></select><span class="error" id="formaDePagoCbxError"></span>
+					</div>
+				</div>
+				<div class="field">
+					<label for="bancoCbx" class="tp-label required spacer"><em>*</em>Banco Emisor</label>
+					<div class="input-box">
+						<select id="bancoCbx"></select><span class="error" id="bancoCbxError"></span>
+					</div>
+				</div>
+				<div class="field">
+					<label for="promosCbx" class="tp-label required spacer"><em>*</em>Cantidad de cuotas</label>
+					<div class="input-box">
+						<select id="promosCbx" class="left"></select><span class="error" id="promosCbxError"></span>
+						<label id="labelPromotionTextId" class="left tp-label"></label>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div class="field">
+					<label for="numeroTarjetaTxt" class="tp-label required spacer"><em>*</em>Número de Tarjeta</label>
+					<div class="input-box">
+						<input class="input-text required-entry" id="numeroTarjetaTxt" maxlength="16" title="Número de Tarjeta"/>
+						<span class="error" id="numeroTarjetaTxtError"></span>
+					</div>
+				</div>
+				<div class="field">
+					<label for="mesTxt" class="tp-label required spacer"><em>*</em>Fecha de Vencimiento</label>
+					<div class="dateFields">
+						<div class="input-box">
+							<input id="mesTxt" maxlength="2" class="left input-text required-entry small">
+							<span class="left spacer">/</span>
+							<input id="anioTxt" maxlength="2" class="left input-text required-entry small">
+						</div>
+						<div class="clear"></div><span class="error" id="anioTxtError"></span>
+					</div>
+				</div>
+				<div class="field">
+					<label for="codigoSeguridadTxt" class="tp-label required spacer"><em>*</em>Código de Seguridad</label>
+					<div class="input-box">
+						<input id="codigoSeguridadTxt" class="left input-text required-entry small"/>
+						<label id="labelCodSegTextId" class="left tp-label spacer"></label>
+						<span class="error" id="codigoSeguridadTxtError"></span>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div class="field">
+					<label for="apynTxt" class="tp-label required"><em>*</em>Nombre y Apellido</label>
+					<div class="input-box">
+						<input id="apynTxt"/>
+						<span class="error" id="apynTxtError"></span>
+					</div>
+				</div>
+				<div class="field">
+					<label for="tipoDocCbx" class="tp-label required spacer"><em>*</em>Documento</label>
+					<div>
+						<div class="input-box">
+							<select id="tipoDocCbx" class="left"></select>
+							<span class="left spacer">&nbsp;</span>
+							<input id="nroDocTxt" class="left input-text required-entry" />	
+						</div>
+						<div class="clear"></div>
+						<span class="error" id="nroDocTxtError"></span>
+					</div>
+				</div>
+				<div class="field">
+					<label for="emailTxt" class="tp-label required"><em>*</em>Email</label>
+					<div class="input-box">
+						<input id="emailTxt"/><br/>
+						<span class="error" id="emailTxtError"></span>
+					</div>
+				</div>
+				<div id="tp-bt-wrapper">
+					<button id="MY_btnConfirmarPago" title="Pagar" class="button"><span>Pagar</span></button>
+				</div>
+			</div>	
+		</div>
+
+	</div>
+<?php
+
+	//aca ponco la consula la base de datos a partir de orden id
+	
+?>
+
+	<script>
+		//securityRequesKey, esta se obtiene de la respuesta del SAR
+		var security = "<?php echo $this->requestkey; ?>";
+		//merchandID
+		var merchantId = "<?php echo $this->merchant; ?>";
+		//monto del pago
+		var numericAmount = "<?php echo $this->amount; ?>";
+		var mail = "<?php echo $this->mail; ?>";
+		var CompleteName = "<?php echo $this->nombre; ?>";
+		
+		
+		/************* CONFIGURACION DEL API ************************/
+		window.TPFORMAPI.hybridForm.initForm({
+			callbackValidationErrorFunction: 'validationCollector',
+			callbackBilleteraFunction: 'billeteraPaymentResponse',
+			botonPagarConBilleteraId: 'MY_btnPagarConBilletera',
+			modalCssClass: 'modal-class',
+			modalContentCssClass: 'modal-content',
+			beforeRequest: 'initLoading',
+			afterRequest: 'stopLoading',
+			callbackCustomSuccessFunction: 'customPaymentSuccessResponse',
+			callbackCustomErrorFunction: 'customPaymentErrorResponse',
+			botonPagarId: 'MY_btnConfirmarPago',
+			codigoSeguridadTxt: 'Codigo',
+		});
+		
+		window.TPFORMAPI.hybridForm.setItem({
+			publicKey: security,
+			merchantId: merchantId,
+			defaultNombreApellido: CompleteName,
+			defaultMail: mail,
+			numericAmount: numericAmount
+		});
+		//callbacks de respuesta del pago
+		function validationCollector(parametros) {
+			jQuery("#"+parametros.field).addClass("error");
+			jQuery("#"+parametros.field+"Error").html("<span class='error'>"+parametros.error+"</span>");
+			console.log(parametros.field + " ==> " + parametros.error);
+		}
+		function billeteraPaymentResponse(response) {
+			console.log("My wallet callback");
+			console.log(response.ResultCode + " : " + response.ResultMessage);
+		}
+		function customPaymentSuccessResponse(response) {
+			window.top.location = "<?php echo Mage::getBaseUrl().'modulodepago2/payment/secondStep?Order='.$this->orden; ?>&Answer="+response.AuthorizationKey;
+		}
+		function customPaymentErrorResponse(response) {
+			window.top.location = "<?php echo Mage::getUrl('checkout/onepage/failure', array('_secure' => true)); ?>";
+		}
+		function initLoading() {
+			console.log('Cargando');
+		}
+		function stopLoading() {
+			console.log('Stop loading...');
+		}
+	</script>
+</body></html>

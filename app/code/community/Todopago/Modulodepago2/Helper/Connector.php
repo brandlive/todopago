@@ -2,7 +2,7 @@
 class Todopago_Modulodepago2_Helper_Connector extends Mage_Core_Helper_Abstract
 {
 	public function getConnector() {
-		require_once(Mage::getBaseDir('lib') . '/metododepago2/TodoPago/lib/Sdk.php');
+		require_once(Mage::getBaseDir('lib') . '/metododepago2/vendor/autoload.php');
 		
 		$http_header = $this->getHeader();
 		$mode = $this->getModo();

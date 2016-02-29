@@ -4,7 +4,7 @@
 		<payment>
 			<groups>
 				<modulodepago2 translate="label comment" module="paygate">
-					<label>Todo Pago v1.0.3</label>
+					<label>Todo Pago v1.2.0</label>
 					<front-end>text</front-end>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -84,6 +84,19 @@
 								<show_in_store>1</show_in_store>
 							</modo_test_prod>
 
+						<!--
+						<hibrido translate="label">
+							<comment>Activa o desactiva el formulario híbrido (Si: formulario híbrido insite, No: redirección a TodoPago)</comment>
+							<label>Utilizar formulario híbrido</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>60</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</hibrido>
+						-->
+						
 							<todopago_modo translate="label" type="group">
 								<label>CONFIGURACION - AMBIENTE DEVELOPERS / PRODUCCION</label>
 								<sort_order>80</sort_order>

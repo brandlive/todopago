@@ -9,6 +9,7 @@ Plug in para la integración con gateway de pago <strong>Todo Pago</strong>
  - [Configuración plug in](#confplugin)
 - [Datos adiccionales para prevención de fraude](#cybersource) 
 - [Consulta de transacciones](#constrans)
+- [Devoluciones](#devoluciones)
 - [Tablas de referencia](#tablas)
 
 <a name="consideracionesgenerales"></a>
@@ -131,6 +132,14 @@ El plug in crea un nuevo <strong>tab</strong> para poder consultar <strong>on li
 ![imagen consulta de trnasacciones](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/getstatus.PNG)
 <br />
 [<sub>Volver a inicio</sub>](#inicio)
+
+<a name="devoluciones"></a>
+## Devolucinones
+Es posible realizar devoluciones o reembolsos mediante el procedimiento habitual de Magento. Para ello dirigirse a una orden, y mediante el menú seleccionar "Invoices" para poder generar una nota de crédito (credit memo) sobre la factura. Allí deberá hacerse click en el botón "Refund" para que la devolución sea online y procesada por Todo Pago.
+![imagen devoluciones](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/magedevol.png)
+<br />
+[<sub>Volver a inicio</sub>](#inicio)
+
 
 <a name="tablas"></a>
 ## Tablas de Referencia
