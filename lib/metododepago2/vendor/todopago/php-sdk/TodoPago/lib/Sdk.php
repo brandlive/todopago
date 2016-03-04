@@ -3,7 +3,7 @@ namespace TodoPago;
 
 require_once(dirname(__FILE__)."/Client.php");
 
-define('TODOPAGO_VERSION','1.3.0');
+define('TODOPAGO_VERSION','1.3.2');
 define('TODOPAGO_ENDPOINT_TEST','https://developers.todopago.com.ar/');
 define('TODOPAGO_ENDPOINT_PROD','https://apis.todopago.com.ar/');
 define('TODOPAGO_ENDPOINT_TENATN', 't/1.1/');
@@ -180,10 +180,10 @@ class Sdk
  		unset($optionsAuthorize['SDK']);
  		unset($optionsAuthorize['SDKVERSION']);
  		unset($optionsAuthorize['LENGUAGEVERSION']);
- 		$optionsAuthorize['SDK'] = "PHP";
- 		$optionsAuthorize['SDKVERSION'] = TODOPAGO_VERSION;
- 		$optionsAuthorize['LENGUAGEVERSION'] = PHP_VERSION;
-		
+		unset($optionsAuthorize['PLUGINVERSION']);
+		unset($optionsAuthorize['ECOMMERCENAME']);
+		unset($optionsAuthorize['ECOMMERCEVERSION']);
+		unset($optionsAuthorize['CMSVERSION']);
 		foreach($optionsAuthorize as $key => $value){
 			if(strpos($value,"#") === false) {
 				$value = substr($value, 0, 254);
@@ -291,35 +291,6 @@ class Sdk
 
 	}
 	
-	public function getByRangeDateTime($optionsGetByRangeDateTime){
-		$rangeDateTime = $this->parseToRangeDateTime($optionsGetByRangeDateTime);
-
-		$rangeDateTimeResponse = $this->getByRangeDateTimeResponse($rangeDateTime);
-
-		$rangeDateTimeResponseValues = $this->parseRangeDateTimeResponseToArray($rangeDateTimeResponse);
-
-		return $rangeDateTimeResponseValues;
-	}
-
-	private function parseToRangeDateTime($optionsGetByRangeDateTime){
-		
-		$obj_options_rangedatetime = (object) $optionsGetByRangeDateTime;
-		
-		return $obj_options_rangedatetime;
-	}
-
-	private function getByRangeDateTimeResponse($rangeDateTime){
-		$client = $this->getClientSoap('Operations');
-		$rangeDateTime = $client->GetByRangeDateTime($rangeDateTime);
-		return $rangeDateTime;
-	}
-
-	private function parseRangeDateTimeResponseToArray($rangeDateTimeResponse){
-		$rangeDateTimeResponseOptions = json_decode(json_encode($rangeDateTimeResponse), true);
-
-		return $rangeDateTimeResponseOptions;
-	}
-	
 	//REST
 	public function getStatus($arr_datos_status){
 		$url = $this->end_point.TODOPAGO_ENDPOINT_TENATN.'api/Operations/GetByOperationId/MERCHANT/'. $arr_datos_status["MERCHANT"] . '/OPERATIONID/'. $arr_datos_status["OPERATIONID"];
@@ -328,6 +299,12 @@ class Sdk
 	
 	public function getAllPaymentMethods($arr_datos_merchant){
 		$url = $this->end_point.TODOPAGO_ENDPOINT_TENATN.'api/PaymentMethods/Get/MERCHANT/'. $arr_datos_merchant["MERCHANT"];
+		return $this->doRest($url);
+	}
+	
+	public function getByRangeDateTime($arr_datos) {
+		if(!isset($arr_datos['PAGENUMBER'])) $arr_datos['PAGENUMBER'] = 1;
+		$url = $this->end_point.TODOPAGO_ENDPOINT_TENATN.'api/Operations/GetByRangeDateTime/MERCHANT/'. $arr_datos["MERCHANT"] . '/STARTDATE/' . $arr_datos["STARTDATE"] . '/ENDDATE/' . $arr_datos["ENDDATE"] . '/PAGENUMBER/' . $arr_datos["PAGENUMBER"];
 		return $this->doRest($url);
 	}
 	

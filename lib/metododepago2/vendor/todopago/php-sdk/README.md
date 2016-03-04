@@ -281,11 +281,11 @@ En este caso hay que llamar a getByRangeDateTime() y devolvera todas las operaci
 ```php
 $client = new TodoPago\Sdk($http_header, $mode);
 
-//Fecha en formato "c" o DateTime::ATOM
-$date1 = date("c", time()-60*60*24*30);
-$date2 = date("c", time());
+//Fecha en formato "Y-m-d"
+$date1 = date("Y-m-d", time()-60*60*24*30);
+$date2 = date("Y-m-d", time());
 
-$client->getByRangeDateTime(array('MERCHANT'=>'305', "STARTDATE" => $date1, "ENDDATE" => $date2));
+$client->getByRangeDateTime(array('MERCHANT'=>'305', "STARTDATE" => $date1, "ENDDATE" => $date2, "PAGENUMBER" => 1));
 ```
 
 [<sub>Volver a inicio</sub>](#inicio)		

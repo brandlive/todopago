@@ -98,8 +98,9 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 		$price_array = array();
 
 		foreach($productos as $item){
+			$p = Mage::getModel('catalog/product')->load($item->getProductId());
 /////
-			$cats = Mage::getModel('catalog/product')->load($item->getProductId())->getCategoryIds();
+			$cats = $p->getCategoryIds();
 
 			if(count($cats) > 0) {
 				$cat_id = $cats[0];
@@ -114,7 +115,8 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 				$productcode_array[] = "default";
 			}
 ////
-			$_description = Mage::getModel('catalog/product')->load($item->getProductId())->getDescription();
+			
+			$_description = $p->getDescription() . "  " . $p->getShortDescription();
 			$_description = $this->getField($_description);
 			$_description = trim($_description);
 			$_description = substr($_description, 0,15);

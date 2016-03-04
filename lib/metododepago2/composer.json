@@ -1,5 +1,5 @@
 {
     "require": {
-        "TodoPago/php-sdk": "^1.3"
+        "todopago/php-sdk": "^1.3"
     }
 }

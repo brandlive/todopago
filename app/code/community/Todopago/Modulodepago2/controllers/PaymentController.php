@@ -27,7 +27,7 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
 
         $magento_version = Mage::getVersion();
         $php_version = phpversion();
-        Mage::log("[Mag:$magento_version - php: $php_version] ".$message );
+        Mage::log("[Mag:$magento_version - php: $php_version] " );
         
 
         $id = Mage::getSingleton('checkout/session')
