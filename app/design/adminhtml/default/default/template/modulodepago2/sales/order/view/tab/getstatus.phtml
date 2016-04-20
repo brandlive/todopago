@@ -16,6 +16,18 @@
 			$status = $this->getLastStatus();
 			if(isset($status['Operations'])&&is_array($status['Operations'])) {
 				foreach ($status['Operations'] as $key => $value) {
+					if($key == "refounds") {
+						echo "<tr><td colspan='2'><strong>Devoluciones</strong></td></tr>";
+						if(is_array($value)) {
+							foreach($value as $key => $v) {
+								echo "<tr><td><strong>$key: </strong></td><td>".$v."</td></tr>";
+								echo "<tr><td colspan='2'>-----------</td></tr>";
+							}
+						} else {
+							echo "<tr><td colspan='2'>Ninguna</td></tr>";
+							echo "<tr><td colspan='2'>-----------</td></tr>";
+						}
+					}
 					if(is_array($value)) {
 						echo "<tr><td><strong>$key: </strong></td><td>".implode(" - ",$value)."</td></tr>";
 					} else {

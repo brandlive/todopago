@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8c05cc870075a2c100b0232a8bf550fa",
+    "hash": "21d107a83e27b085cf2c7744143841da",
     "content-hash": "33994228dece319dcc386aa245a08e40",
     "packages": [
         {
             "name": "todopago/php-sdk",
-            "version": "V1.3.2",
+            "version": "V1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TodoPago/SDK-PHP.git",
-                "reference": "69240a45ddfa416a7ad94f74ed41f62cb5e5892c"
+                "reference": "11b8b0504f7510f0e2b176fa009e2cbb75e41c11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TodoPago/SDK-PHP/zipball/69240a45ddfa416a7ad94f74ed41f62cb5e5892c",
-                "reference": "69240a45ddfa416a7ad94f74ed41f62cb5e5892c",
+                "url": "https://api.github.com/repos/TodoPago/SDK-PHP/zipball/11b8b0504f7510f0e2b176fa009e2cbb75e41c11",
+                "reference": "11b8b0504f7510f0e2b176fa009e2cbb75e41c11",
                 "shasum": ""
             },
             "require": {
@@ -32,7 +32,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "SDK para TodoPago",
-            "time": "2016-03-03 17:11:55"
+            "time": "2016-04-20 14:43:44"
         }
     ],
     "packages-dev": [],

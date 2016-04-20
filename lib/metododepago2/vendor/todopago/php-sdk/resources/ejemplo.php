@@ -1,6 +1,6 @@
 <?php
 //importo archivo con SDK
-include_once dirname(__FILE__)."/../TodoPago/lib/Sdk.php";
+include_once dirname(__FILE__)."/../vendor/autoload.php";
 use TodoPago\Sdk;
 
 //común a todas los métodos
@@ -137,3 +137,11 @@ echo "<h3>var_dump de la respuesta de returnRequest</h3>";
 var_dump($rta6);
 echo "<h3>var_dump de la respuesta de voidRequest</h3>";
 var_dump($rta7);
+
+$u1 = new TodoPago\Data\User();
+$u1->setUser("ejemplo@todopago.com.ar");
+$u1->setPassword("password");
+
+//ejecuto los métodos
+$rta = $connector->getCredentials($u1);
+var_dump($rta);

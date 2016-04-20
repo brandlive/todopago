@@ -1,5 +1,5 @@
 <a name="inicio"></a>
-plugin-magento
+Magento- módulo Todo Pago (v1.7.x a 1.9.x)
 ============
 
 Plug in para la integración con gateway de pago <strong>Todo Pago</strong>
@@ -7,10 +7,18 @@ Plug in para la integración con gateway de pago <strong>Todo Pago</strong>
 - [Instalación](#instalacion)
 - [Configuración](#configuracion)
  - [Configuración plug in](#confplugin)
-- [Datos adiccionales para prevención de fraude](#cybersource) 
-- [Consulta de transacciones](#constrans)
-- [Devoluciones](#devoluciones)
+ - [Formulario Hibrido](#formHibrido)
+ - [Obtener datos de configuracion](#getcredentials)
+ - [Nuevas columnas y atributos](#tca)
+- [Prevencion de Fraude](#cybersource)
+ - [Consideraciones generales](#cons_generales)
+ - [Consideraciones para vertical retail](#cons_retail)
+ - [Datos adiccionales para prevención de fraude](#prevfraudedatosadicionales) 
+- [Características](#features) 
+ - [Consulta de transacciones](#constrans)
+ - [Devoluciones](#devoluciones)
 - [Tablas de referencia](#tablas)
+- [Versiones disponibles](#availableversions)
 
 <a name="consideracionesgenerales"></a>
 ## Consideraciones Generales
@@ -22,7 +30,7 @@ La versión de este plug in esta testeada en PHP 5.3 en adelante y MAGENTO 1.7 a
 1. Descomprimir el archivo magento-plugin-master.zip. 
 2.	Copiar carpeta 'app', 'js', 'skin' y 'lib' al root de magento con los mismos nombres.
 3.	Ir a  System->Cache Managment y refrescar el cache.
-4.	Luego ir a 'Setting->Configuration->Payment Methods' y configurar desde la pestaña de <strong>Todo Pago</strong>.
+4.	Luego ir a 'System->Configuration , luego en el menu lateral sales->Payment Methods' y configurar desde la pestaña de <strong>Todo Pago</strong>.
 
 Observaci&oacute;n:
 Descomentar: <em>extension=php_curl.dll</em>, <em>extension=php_soap.dll</em> y <em>extension=php_openssl.dll</em> del php.ini, ya que para la conexión al gateway se utiliza la clase <em>SoapClient</em> del API de PHP.
@@ -32,23 +40,42 @@ Descomentar: <em>extension=php_curl.dll</em>, <em>extension=php_soap.dll</em> y 
 <a name="configuracion"></a>
 ##Configuración
 
-[configuración plug in](#confplugin).
 <a name="confplugin"></a>
 ####Configuración plug in
-Para llegar al menu de configuración ir a: <em>System->Configuration</em> y seleccionar Paymenth Methods en el menú izquierdo. Entre los medios de pago aparecerá una solapa con el nombre <strong>Todo Pago</strong>. El Plug-in esta separado en configuarción general y 3 sub-menues.<br />
-<sub><em>Menú principal</em></sub>
-![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/menu_todopago.PNG)
-<sub><em>Menú ambiente</em></sub>
-![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/configuracion_magento1.PNG)
-<sub><em>Meenú estados y menú servicios</em></sub>
-![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/configuracion_magento2.PNG)
-
-<a name="confplanes"></a>
-<br />
-
+Para llegar al menu de configuración ir a: <em>System->Configuration</em> y seleccionar Payment Methods en el menú izquierdo. Entre los medios de pago aparecerá una solapa con el nombre <strong>Todo Pago</strong>. El Plug-in esta separado en configuarción general y 3 sub-menues.
+<sub></br><em>Menú principal</em></br></sub>
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/magento/menu_todopago.PNG)
+<sub></br><em>Menú ambiente</em></br></sub>
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/magento/configuracion_magento1.PNG) 
+<sub></br><em>Meenú estados y menú servicios</em></br></sub>
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/magento/configuracion_magento2.PNG) 
+</br>
 [<sub>Volver a inicio</sub>](#inicio)
+
+<a name="formHibrido"></a>
+####Formulario Hibrido
+En la configuracion del plugin tambien estara la posibilidad de mostrarle al cliente el formulario de pago de TodoPago integrada en el sitio. 
+Para esto , en la configuracion se debe seleccionar YES en el campo Utilizar formulario híbrido:
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/magento/formHibrid1.png)
+<sub></br>Del lado del cliente el formulario se vera asi:</br></sub> 
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/magento/formHibrid2.png)
+</br>
+[<sub>Volver a inicio</sub>](#inicio)
+
+<a name="getcredentials"></a>
+####Obtener datos de configuracion
+Se puede obtener los datos de configuracion del plugin con solo loguearte con tus credenciales de Todopago. </br>
+a. Ir a la opcion Obtener credenciales</br>
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/magento/getcredentials1.png)
+b. En el popup loguearse con el mail y password de Todopago.</br>
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/magento/getcredentials2.png)
+c. Los datos se cargaran automaticamente en los campos Merchant ID y Security code en el ambiente correspondiente (Desarrollo o produccion ) y solo hay que hacer click en el boton guardar datos y listo.</br>
+![imagen de configuracion](https://raw.githubusercontent.com/TodoPago/imagenes/master/magento/getcredentials3.png)
+[<sub>Volver a inicio</sub>](#inicio)
+
+<br />
 <a name="tca"></a>
-## Nuevas columnas y atributos
+#### Nuevas columnas y atributos
 El plug in para lograr las nuevas funcionalidades y su persistencia dentro del framework crear&aacute; nuevas tablas, columnas y atributos:
 
 #####Nuevas Columnas:
@@ -57,7 +84,8 @@ El plug in para lograr las nuevas funcionalidades y su persistencia dentro del f
 #####Nuevos atributos:
 1. del tipo "catalog_product": todopagofechaevento, todopagocodigo, todopagoenvio, todopagoservicio, todopagodelivery.
 2. del tipo "customer": celular. 
-<br/>
+
+<br />
 [<sub>Volver a inicio</sub>](#inicio)
 
 <a name="cybersource"></a>
@@ -117,25 +145,33 @@ $customer = Mage::getModel('customer/customer')->load($customer_id);
 $customer->getCelular();
 ```
 En caso que la tienda decida no implementar este nuevo atributo o que el valor quede vac&iacute;o el plug in mandara al sistema el mismo n&uacute;mero que devuleve el m&eacute;todo $order->getBillingAddress()->getTelephone(). 
+<a name="prevfraudedatosadicionales" ></a>
 ####Nuevos Atributos en los productos
-Para efectivizar la prevenci&oacute;n de fraude se han creado nuevos atributos de producto dentro de la categoria <em>"Prevenci&oacute;n de Fraude"</em>. 
+Para efectivizar la prevenci&oacute;n de fraude se han creado nuevos atributos de producto dentro de la categoria <em>"Prevenci&oacute;n de Fraude"</em>.</br> 
 ![imagen nuevos catalogo producto](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/catalogo_producto.PNG)<br />
 <sub></sub><br />
 ![imagen campos cybersource](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/campos_prevenciondefraude.PNG)
-<sub>Estos campos no son obligatorios aunque si requeridos para Control de Fraude</sub>
+<sub></br>Estos campos no son obligatorios aunque si requeridos para Control de Fraude</sub>
 <br />
 [<sub>Volver a inicio</sub>](#inicio)
 
-<a name="constrans"></a>
-## Consulta de Transacciones
-El plug in crea un nuevo <strong>tab</strong> para poder consultar <strong>on line</strong> las características de la transacci&oacute;n en el sistema de Todo Pago.
+<a name="features"></a>
+## Características
+ - [Consulta de transacciones](#constrans)
+ - [Devoluciones](#devoluciones)
+ 
+<br />
+<a name="constrans" ></a>
+#### Consulta de Transacciones
+El plug in crea un nuevo <strong>tab</strong> para poder consultar <strong>on line</strong> las características de la transacci&oacute;n en el sistema de Todo Pago.</br>
 ![imagen consulta de trnasacciones](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/getstatus.PNG)
 <br />
 [<sub>Volver a inicio</sub>](#inicio)
+</br>
 
 <a name="devoluciones"></a>
-## Devolucinones
-Es posible realizar devoluciones o reembolsos mediante el procedimiento habitual de Magento. Para ello dirigirse a una orden, y mediante el menú seleccionar "Invoices" para poder generar una nota de crédito (credit memo) sobre la factura. Allí deberá hacerse click en el botón "Refund" para que la devolución sea online y procesada por Todo Pago.
+#### Devoluciones
+Es posible realizar devoluciones o reembolsos mediante el procedimiento habitual de Magento. Para ello dirigirse a una orden, y mediante el menú seleccionar "Invoices" para poder generar una nota de crédito (credit memo) sobre la factura. Allí deberá hacerse click en el botón "Refund" para que la devolución sea online y procesada por Todo Pago.</br>
 ![imagen devoluciones](https://raw.githubusercontent.com/TodoPago/imagenes/master/README.img/magedevol.png)
 <br />
 [<sub>Volver a inicio</sub>](#inicio)
@@ -235,5 +271,29 @@ VALUES
 ('en_US', '507', 'Tucuman'),
 ('en_US','5071', 'Santa Cruz');
 ```
+
+<a name="availableversions"></a>
+## Versiones Disponibles##
+<table>
+  <thead>
+    <tr>
+      <th>Version del Plugin</th>
+      <th>Estado</th>
+      <th>Versiones Compatibles</th>
+    </tr>
+  <thead>
+  <tbody>
+    <tr>
+      <td><a href="https://github.com/TodoPago/Plugin-Magento/archive/master.zip">v1.7.x - v1.9.x</a></td>
+      <td>Stable (Current version)</td>
+      <td>Community Edition 1.6.x - 1.9.x<br />
+          Enterprise Edition 1.11.x - 1.14.x
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+*Click on the links above for instructions on installing and configuring the module.*
+
 
 [<sub>Volver a inicio</sub>](#inicio)

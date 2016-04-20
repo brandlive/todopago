@@ -4,7 +4,7 @@
 		<payment>
 			<groups>
 				<modulodepago2 translate="label comment" module="paygate">
-					<label>Todo Pago v1.2.1</label>
+					<label>Todo Pago v1.3.0</label>
 					<front-end>text</front-end>
 					<sort_order>2</sort_order>
 					<show_in_default>1</show_in_default>
@@ -21,16 +21,6 @@
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</active>
-
-						<header_http>
-							<comment>Ingresar el contenido del campo API Keys (Credenciales) del Portal de TodoPago. Ejemplo: "PRISMA 912EC803B2CE49E4A541068D495AB570"</comment>
-								<label>API Keys</label>
-								<frontend_type>text</frontend_type>
-								<sort_order>15</sort_order>
-								<show_in_default>1</show_in_default>
-								<show_in_website>1</show_in_website>
-								<show_in_store>1</show_in_store>
-							</header_http>
 							<title translate="label">
 								<label>Nombre a mostrar en front end</label>
 								<comment>Nombre con el que aparecera el Medio de Pago
@@ -84,7 +74,6 @@
 								<show_in_store>1</show_in_store>
 							</modo_test_prod>
 
-						<!--
 						<hibrido translate="label">
 							<comment>Activa o desactiva el formulario híbrido (Si: formulario híbrido insite, No: redirección a TodoPago)</comment>
 							<label>Utilizar formulario híbrido</label>
@@ -95,7 +84,6 @@
 							<show_in_website>1</show_in_website>
 							<show_in_store>1</show_in_store>
 						</hibrido>
-						-->
 						
 							<todopago_modo translate="label" type="group">
 								<label>CONFIGURACION - AMBIENTE DEVELOPERS / PRODUCCION</label>
@@ -104,6 +92,18 @@
 								<show_in_website>1</show_in_website>
 								<show_in_store>1</show_in_store>
 								<fields>
+									<credential_button  translate="label">
+										<label><![CDATA[<b><u>Obtener Credenciales</b></u>]]></label>
+										<button_label>Produccion</button_label>
+										<button_url><![CDATA[adminhtml/credential/production]]></button_url>
+										<sandbox_button_label>Developers</sandbox_button_label>
+										<sandbox_button_url><![CDATA[adminhtml/credential/developers]]></sandbox_button_url>
+										<sort_order>80</sort_order>
+										<show_in_default>1</show_in_default>
+										<show_in_website>1</show_in_website>
+										<show_in_store>1</show_in_store>								
+										<frontend_model>modulodepago2/system_config_credential_front</frontend_model>
+									</credential_button>
 									<label_produccion>
 										<label><![CDATA[<b><u>Ambiente Producción:
 										</b></u>]]></label>
@@ -127,12 +127,21 @@
 									<codigo_seguridad>
 										<label>Security code</label>
 										<comment>API Keys sin PRISMA/TODOPAGO y sin espacio</comment>
-										<frontend_type>password</frontend_type>
+										<frontend_type>text</frontend_type>
 										<sort_order>85</sort_order>
 										<show_in_default>1</show_in_default>
 										<show_in_website>1</show_in_website>
 										<show_in_store>1</show_in_store>
 									</codigo_seguridad>
+									<apikey>
+										<comment>Ingresar el contenido del campo API Keys (Credenciales) del Portal de TodoPago. Ejemplo: "PRISMA 912EC803B2CE49E4A541068D495AB570"</comment>
+											<label>API Keys</label>
+											<frontend_type>text</frontend_type>
+											<sort_order>85</sort_order>
+											<show_in_default>1</show_in_default>
+											<show_in_website>1</show_in_website>
+											<show_in_store>1</show_in_store>
+									</apikey>
 									<label_test>
 										<label><![CDATA[<b><u>Ambiente Developers:
 										</b></u>]]></label>
@@ -158,12 +167,21 @@
 									<codigo_seguridad_test>
 										<label>Security code (Developers)</label>
 										<comment>API Keys sin PRISMA/TODOPAGO y sin espacio</comment>
-										<frontend_type>password</frontend_type>
+										<frontend_type>text</frontend_type>
 										<sort_order>90</sort_order>
 										<show_in_default>1</show_in_default>
 										<show_in_website>1</show_in_website>
 										<show_in_store>1</show_in_store>
 									</codigo_seguridad_test>
+									<apikey_test>
+										<comment>Ingresar el contenido del campo API Keys (Credenciales) del Portal de TodoPago. Ejemplo: "PRISMA 912EC803B2CE49E4A541068D495AB570"</comment>
+											<label>API Keys</label>
+											<frontend_type>text</frontend_type>
+											<sort_order>91</sort_order>
+											<show_in_default>1</show_in_default>
+											<show_in_website>1</show_in_website>
+											<show_in_store>1</show_in_store>
+									</apikey_test>
 								</fields>
 							</todopago_modo>
 

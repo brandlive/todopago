@@ -1,4 +1,10 @@
-<script src="https://developers.todopago.com.ar/resources/TPHybridForm-v0.1.js"></script>
+<?php
+	if(Mage::getStoreConfig('payment/modulodepago2/modo_test_prod') == "test"){
+		?><script src="https://developers.todopago.com.ar/resources/TPHybridForm-v0.1.js"></script><?php
+	} else {
+		?><script src="https://forms.todopago.com.ar/resources/TPHybridForm-v0.1.js"></script><?php		
+	}
+?>
 <script src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS).'modulodepago2/jquery.js'; ?>"></script>
 <script>
 	jQuery(document).ready(function() {
