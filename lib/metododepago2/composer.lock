@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "21d107a83e27b085cf2c7744143841da",
-    "content-hash": "33994228dece319dcc386aa245a08e40",
+    "hash": "6902721447ad59943fb0688097d6a7e1",
+    "content-hash": "67de7863b05eaf2726a6458f9417e395",
     "packages": [
         {
             "name": "todopago/php-sdk",
-            "version": "V1.4.0",
+            "version": "V1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TodoPago/SDK-PHP.git",
-                "reference": "11b8b0504f7510f0e2b176fa009e2cbb75e41c11"
+                "reference": "96554dc7603debfe6b6106414df5984a75fc661f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TodoPago/SDK-PHP/zipball/11b8b0504f7510f0e2b176fa009e2cbb75e41c11",
-                "reference": "11b8b0504f7510f0e2b176fa009e2cbb75e41c11",
+                "url": "https://api.github.com/repos/TodoPago/SDK-PHP/zipball/96554dc7603debfe6b6106414df5984a75fc661f",
+                "reference": "96554dc7603debfe6b6106414df5984a75fc661f",
                 "shasum": ""
             },
             "require": {
@@ -32,7 +32,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "SDK para TodoPago",
-            "time": "2016-04-20 14:43:44"
+            "time": "2016-06-15 18:44:16"
         }
     ],
     "packages-dev": [],

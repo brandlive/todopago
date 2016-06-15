@@ -98,6 +98,8 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 		$price_array = array();
 
 		foreach($productos as $item){
+			if ($item->getParentItem()) continue;
+			
 			$p = Mage::getModel('catalog/product')->load($item->getProductId());
 /////
 			$cats = $p->getCategoryIds();
