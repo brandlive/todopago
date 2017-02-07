@@ -344,6 +344,16 @@ public function lastStep($order_key, $answer_key){
                 $order->sendOrderUpdateEmail(true, $message);
             }
 
+            /*costo financiero*/
+            $amountBuyer = isset($second_step['Payload']['Request']['AMOUNTBUYER'])?$second_step['Payload']['Request']['AMOUNTBUYER']:number_format($order->getGrandTotal(), 2, ".", "");
+            $cf = $amountBuyer - $order->getGrandTotal();
+
+            $order->setTodopagoCostofinanciero($cf);
+            $order->setGrandTotal($amountBuyer);
+            $order->setBaseGrandTotal($amountBuyer);
+
+            $order->save();
+
 			$payment = $order->getPayment();
 			$payment->setTransactionId($second_step['AuthorizationKey']);
 			$payment->setParentTransactionId($payment->getTransactionId());
@@ -355,8 +365,12 @@ public function lastStep($order_key, $answer_key){
 			$invoice = $order->prepareInvoice()
                    ->setTransactionId(1)
                    ->addComment("Invoice created.")
-				   ->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE)
-                   ->register()
+				   ->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+
+            $invoice->setGrandTotal($amountBuyer);
+            $invoice->setBaseGrandTotal($amountBuyer);
+
+            $invoice = $invoice->register()
                    ->pay();
 
 			Mage::getModel('core/resource_transaction')
