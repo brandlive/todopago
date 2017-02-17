@@ -3,46 +3,41 @@ define('MAX_CUOTAS_DEFAULT', '12');
 
 class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Front_Action{
 
-    protected $_todopagoLog;
+    public function notificationAction() {
+        $todopagoLog = Mage::helper('modulodepago2/todopagolog');
+        $todopagoLog->log("init: ".__METHOD__);
+        $order_id = $this->getRequest()->get('Order');
+        $answer_key = $this->getRequest()->get('Answer');
 
-    public function __construct(){
-        $this->_todopagoLog = Mage::helper('modulodepago2/todopagolog');
-        $this->_helper      = Mage::helper('modulodepago2/data');
+        $todopagotable = new Todopago_Modulodepago2_Model_Todopagotable();
+        $transaccion = $todopagotable->load($order_id,"order_id");
+
+        if($transaccion->getAnswer_key() == null) {
+            return $this->getResponse()->setHeader('HTTP/1.1','404',true)->sendResponse();
+        }
+
+        if($transaccion->getAnswer_key() != $answer_key) {
+            return $this->getResponse()->setHeader('HTTP/1.1','400',true)->sendResponse();
+        }
+
+        //Actualizar order status
+        echo "OK";
     }
-
-	public function notificationAction() {
-        $this->_todopagoLog->log("init: ".__METHOD__);
-		$order_id = $this->getRequest()->get('Order');
-		$answer_key = $this->getRequest()->get('Answer');
-
-		$todopagotable = new Todopago_Modulodepago2_Model_Todopagotable();
-		$transaccion = $todopagotable->load($order_id,"order_id");
-
-		if($transaccion->getAnswer_key() == null) {
-			return $this->getResponse()->setHeader('HTTP/1.1','404',true)->sendResponse();
-		}
-
-		if($transaccion->getAnswer_key() != $answer_key) {
-			return $this->getResponse()->setHeader('HTTP/1.1','400',true)->sendResponse();
-		}
-
-		//Actualizar order status
-		echo "OK";
-	}
 
     // este m�todo recolecta los datos b�sicos para realizar la primera transacci�n con el gateway
     public function getPayDataAction(){
-        $this->_todopagoLog->log("init: ".__METHOD__);
+        $todopagoLog = Mage::helper('modulodepago2/todopagolog');
+        $todopagoLog->log("init: ".__METHOD__);
 
         $magento_version = Mage::getVersion();
         $php_version = phpversion();
-        $this->_todopagoLog->log("[Mag:$magento_version - php: $php_version] " );
+        $todopagoLog->log("[Mag:$magento_version - php: $php_version] " );
 
 
         $id = Mage::getSingleton('checkout/session')
         ->getLastRealOrderId();
 
-        $this->_todopagoLog->log(__METHOD__." OPERATIONID: ".$id);
+        $todopagoLog->log(__METHOD__." OPERATIONID: ".$id);
 
         $order = Mage::getSingleton('sales/order')
         ->loadByIncrementId($id);
@@ -58,11 +53,11 @@ $order->setState("new", $status, $message);
         $customer_id = $order->getCustomerId();
         $customer = Mage::getModel('customer/customer')->load($customer_id);
 
-        $this->_todopagoLog->log("Modulo de pago - Todopago ==> {order_id: $id, customer_id: $customer_id");
+        $todopagoLog->log("Modulo de pago - Todopago ==> {order_id: $id, customer_id: $customer_id");
         $vertical = Mage::getStoreConfig('payment/modulodepago2/cs_verticales');
         $payDataComercial = array();
 
-        $this->_todopagoLog->log("orden desde el controller: ".$order->getCustomerEmail());
+        $todopagoLog->log("orden desde el controller: ".$order->getCustomerEmail());
 
         $payDataOperacion = Todopago_Modulodepago2_Model_Cybersource_Factorycybersource::get_cybersource_extractor($vertical,
             $order, $customer)->getDataCS();
@@ -93,13 +88,14 @@ $order->setState("new", $status, $message);
             $payDataOperacion ['MAXINSTALLMENTS'] = ( !is_null($maxCuotas) && $maxCuotas > 0 && is_numeric($maxCuotas))? $maxCuotas:MAX_CUOTAS_DEFAULT;
         }
 
-		$this->firstStep($payDataComercial, $payDataOperacion);
+        $this->firstStep($payDataComercial, $payDataOperacion);
 
     }
 
     public function setCelularAction()
     {
-        $this->_todopagoLog->log("init: ".__METHOD__);
+        $todopagoLog = Mage::helper('modulodepago2/todopagolog');
+        $todopagoLog->log("init: ".__METHOD__);
         $quote_id = $this->getRequest()->get($quote_id);
         $celular = $this->getRequest()->get($celular);
         $checkout = Mage::getSingleton('checkout/session')->getQuote();
@@ -108,8 +104,9 @@ $order->setState("new", $status, $message);
     }
 
     public function firstStep($payDataComercio, $payDataOperacion){
+        $todopagoLog = Mage::helper('modulodepago2/todopagolog');
         /*COMENTO LAS PARTES DONDE SE UTILIZAN LOS ESTADOS CREADOS POR EL MODULO*/
-        $this->_todopagoLog->log("init: ".__METHOD__);
+        $todopagoLog->log("init: ".__METHOD__);
 
         $order = new Mage_Sales_Model_Order ();
         $order->loadByIncrementId($payDataOperacion ['OPERATIONID']);
@@ -117,21 +114,21 @@ $order->setState("new", $status, $message);
 
         try{
 
-            $this->_todopagoLog->log(__METHOD__."<-- try - OPERATIONID: ".$payDataOperacion ['OPERATIONID']);
-			$todopago_connector = Mage::helper('modulodepago2/connector')->getConnector();
+            $todopagoLog->log(__METHOD__."<-- try - OPERATIONID: ".$payDataOperacion ['OPERATIONID']);
+            $todopago_connector = Mage::helper('modulodepago2/connector')->getConnector();
 
-            $this->_todopagoLog->log("Modulo de pago - TodoPago ==> payDataComercio --> ".json_encode($payDataComercio));
-            $this->_todopagoLog->log("Modulo de pago - TodoPago ==> payDataOperacion --> ".json_encode($payDataOperacion));
+            $todopagoLog->log("Modulo de pago - TodoPago ==> payDataComercio --> ".json_encode($payDataComercio));
+            $todopagoLog->log("Modulo de pago - TodoPago ==> payDataOperacion --> ".json_encode($payDataOperacion));
 
             $first_step = $todopago_connector->sendAuthorizeRequest($payDataComercio, $payDataOperacion);
 
             if($first_step["StatusCode"] == 702){
-                $this->_todopagoLog->log("Modulo de pago - TodoPago ==> respuesta de sendAuthorizeRequest --> reintento SAR");
+                $todopagoLog->log("Modulo de pago - TodoPago ==> respuesta de sendAuthorizeRequest --> reintento SAR");
                 $first_step = $todopago_connector->sendAuthorizeRequest($payDataComercio, $payDataOperacion);
             }
 
 
-            $this->_todopagoLog->log("Modulo de pago - TodoPago ==> respuesta de sendAuthorizeRequest -->".json_encode($first_step));
+            $todopagoLog->log("Modulo de pago - TodoPago ==> respuesta de sendAuthorizeRequest -->".json_encode($first_step));
 
             $todopagotable = new Todopago_Modulodepago2_Model_Todopagotable();
             $todopagotable->setOrderId($payDataOperacion ['OPERATIONID']);
@@ -139,10 +136,10 @@ $order->setState("new", $status, $message);
             $todopagotable->setSendauthorizeanswerStatus(Mage::getModel('core/date')->date('Y-m-d H:i:s')." - ".$first_step["StatusCode"]." - ".$first_step['StatusMessage']);
 
             if($first_step["StatusCode"] == -1){
-                $this->_todopagoLog->log("StatusCode = -1 - OPERATIONID".$payDataOperacion ['OPERATIONID']);
-				$todopagotable->setRequestKey($first_step['RequestKey']);
-				$todopagotable->save();
-				$order->setData('todopagoclave', $first_step['RequestKey']);
+                $todopagoLog->log("StatusCode = -1 - OPERATIONID".$payDataOperacion ['OPERATIONID']);
+                $todopagotable->setRequestKey($first_step['RequestKey']);
+                $todopagotable->save();
+                $order->setData('todopagoclave', $first_step['RequestKey']);
 
                 $status = Mage::getStoreConfig('payment/modulodepago2/order_status');
                 if(empty($status)) $status = Mage::getStoreConfig('payment/todopago_avanzada/order_status');
@@ -158,8 +155,8 @@ $order->setState("new", $status, $message);
                 $order->setState($state, $status, $message);
 
                 $order->save();
-                $this->_todopagoLog->log("Modulo de pago - TodoPago ==> redirige a: ".$first_step['URL_Request']);
-				if(Mage::getStoreConfig('payment/modulodepago2/hibrido') == 1) {
+                $todopagoLog->log("Modulo de pago - TodoPago ==> redirige a: ".$first_step['URL_Request']);
+                if(Mage::getStoreConfig('payment/modulodepago2/hibrido') == 1) {
                     if($this->getRequest()->get('tpcheckout') == "Mage_Checkout") {
 
                         $url = Mage::getUrl('modulodepago2/formulariocustom/index', array(
@@ -167,7 +164,7 @@ $order->setState("new", $status, $message);
                             'order' =>  $order->getIncrementId(),
                             'requestKey' => $first_step['PublicRequestKey'],
                         ));
-    					// echo '{"url":"'.$url.'"}';
+                        // echo '{"url":"'.$url.'"}';
                         return $this->replyJson(array('url' => $url));
                     } else {
                         $url = Mage::getUrl('modulodepago2/formulariocustom/insite', array(
@@ -178,11 +175,11 @@ $order->setState("new", $status, $message);
                         $this->_redirectUrl($url);
                         return;
                     }
-				}
+                }
                 $this->_redirectUrl($first_step['URL_Request']);
 
             } else{
-                $this->_todopagoLog->log("StatusCode != -1 - OPERATIONID".$payDataOperacion ['OPERATIONID']);
+                $todopagoLog->log("StatusCode != -1 - OPERATIONID".$payDataOperacion ['OPERATIONID']);
 
                 $status = Mage::getStoreConfig('payment/modulodepago2/estado_denegada');
                 if(empty($status)) $status = Mage::getStoreConfig('payment/todopago_avanzada/estado_denegada');
@@ -194,18 +191,18 @@ $order->setState("new", $status, $message);
                     $message = "Todo Pago: " . $first_step['StatusMessage'];
                 }
 
-								$order->cancel();
-								$this->_todopagoLog->log("Orden cancelada");
+                                $order->cancel();
+                                $todopagoLog->log("Orden cancelada");
                 $order->setState($state, $status, $message);
                 $order->save();
-                $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
+                $todopagoLog->log("redirige a: ".Mage::helper('modulodepago2/data')->getUrlFailure());
                 //Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/failure', array('_secure' => true));
                 if(Mage::getStoreConfig('payment/modulodepago2/hibrido') == 1) {
                     $this->getResponse()->clearHeaders()->setHeader('HTTP/1.0', 400, true);
-                    $url = Mage::getUrl($this->_helper->getUrlFailure(), array('_secure' => true));
+                    $url = Mage::getUrl(Mage::helper('modulodepago2/data')->getUrlFailure(), array('_secure' => true));
                     return $this->replyJson(array('url' => $url));
                 } else {
-                    $url = Mage::getUrl($this->_helper->getUrlFailure(), array(
+                    $url = Mage::getUrl(Mage::helper('modulodepago2/data')->getUrlFailure(), array(
                         '_secure' => true
                     ));
                     $this->_redirectUrl($url);
@@ -214,8 +211,8 @@ $order->setState("new", $status, $message);
             }
 
         } catch(Exception $e){
-            $this->_todopagoLog->log("catch : ".__METHOD__);
-            $this->_todopagoLog->log("Modulo de pago - TodoPago - OPERATIONID: ".$payDataOperacion['OPERATIONID']."==> (Exception)".json_encode($e));
+            $todopagoLog->log("catch : ".__METHOD__);
+            $todopagoLog->log("Modulo de pago - TodoPago - OPERATIONID: ".$payDataOperacion['OPERATIONID']."==> (Exception)".json_encode($e));
 
 
             $status = Mage::getStoreConfig('payment/modulodepago2/estado_denegada');
@@ -228,18 +225,18 @@ $order->setState("new", $status, $message);
                 $message = "Modulo de pago - TodoPago ==> (Exception)" . $e;
             }
 
-						$order->cancel();
-						$this->_todopagoLog->log("Orden cancelada");
+                        $order->cancel();
+                        $todopagoLog->log("Orden cancelada");
             $order->setState($state, $status, $message);
             $order->save();
-            $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
+            $todopagoLog->log("redirige a: ".Mage::helper('modulodepago2/data')->getUrlFailure());
             //Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/failure', array('_secure' => true));
             if(Mage::getStoreConfig('payment/modulodepago2/hibrido') == 1) {
                 $this->getResponse()->clearHeaders()->setHeader('HTTP/1.0', 400, true);
-                $url = Mage::getUrl($this->_helper->getUrlFailure(), array('_secure' => true));
+                $url = Mage::getUrl(Mage::helper('modulodepago2/data')->getUrlFailure(), array('_secure' => true));
                 return $this->replyJson(array('url' => $url));
             } else {
-                $url = Mage::getUrl($this->_helper->getUrlFailure(), array(
+                $url = Mage::getUrl(Mage::helper('modulodepago2/data')->getUrlFailure(), array(
                     '_secure' => true
                 ));
                 $this->_redirectUrl($url);
@@ -254,7 +251,8 @@ private function replyJson($values)
 }
 
 public function secondStepAction(){
-    $this->_todopagoLog->log("init: ".__METHOD__);
+    $todopagoLog = Mage::helper('modulodepago2/todopagolog');
+    $todopagoLog->log("init: ".__METHOD__);
     $todopagotable = new Todopago_Modulodepago2_Model_Todopagotable();
     $todopagotable->load($this->getRequest()->get('Order'), "order_id");
     if($todopagotable->getAnswerKey() == null){
@@ -265,13 +263,14 @@ public function secondStepAction(){
 }
 
 public function lastStep($order_key, $answer_key){
+    $todopagoLog = Mage::helper('modulodepago2/todopagolog');
     /*COMENTO LAS PARTES DONDE SE UTILIZAN LOS ESTADOS CREADOS POR EL MODULO*/
-    $this->_todopagoLog->log("init: ".__METHOD__);
-	$todopago_connector = Mage::helper('modulodepago2/connector')->getConnector();
+    $todopagoLog->log("init: ".__METHOD__);
+    $todopago_connector = Mage::helper('modulodepago2/connector')->getConnector();
 
         // /a este metodo es al que me va a devolver el gateway en caso que todo salga ok
-    $this->_todopagoLog->log("Modulo de pago - TodoPago ==> secondStep - orderid: ".$order_key);
-    $this->_todopagoLog->log("Modulo de pago - TodoPago ==> secondStep - AnswerKey: ".$answer_key);
+    $todopagoLog->log("Modulo de pago - TodoPago ==> secondStep - orderid: ".$order_key);
+    $todopagoLog->log("Modulo de pago - TodoPago ==> secondStep - AnswerKey: ".$answer_key);
     $order = new Mage_Sales_Model_Order ();
     $order->loadByIncrementId($order_key);
 
@@ -291,13 +290,13 @@ public function lastStep($order_key, $answer_key){
         'AnswerKey' => $answer_key
         );
 
-    $this->_todopagoLog->log("Modulo de pago - TodoPago ==> secondStep (".$order_key.") - AnswerKey: ".json_encode($optionsAnswer));
+    $todopagoLog->log("Modulo de pago - TodoPago ==> secondStep (".$order_key.") - AnswerKey: ".json_encode($optionsAnswer));
     $message = "";
 
     try{
-        $this->_todopagoLog->log("try ".__METHOD__);
+        $todopagoLog->log("try ".__METHOD__);
         $second_step = $todopago_connector->getAuthorizeAnswer($optionsAnswer);
-        $this->_todopagoLog->log("Modulo de pago - TodoPago ==> secondStep (".$order_key.") - second_step: ".json_encode($second_step));
+        $todopagoLog->log("Modulo de pago - TodoPago ==> secondStep (".$order_key.") - second_step: ".json_encode($second_step));
 
         $todopagotable = new Todopago_Modulodepago2_Model_Todopagotable();
         $todopagotable->load($order_key, "order_id");
@@ -321,8 +320,8 @@ public function lastStep($order_key, $answer_key){
             try{
                 $order->sendNewOrderEmail();
             }catch(Exception $e){
-                $this->_todopagoLog->log("catch : ".__METHOD__);
-                $this->_todopagoLog->log("message: ".var_export($e, true));
+                $todopagoLog->log("catch : ".__METHOD__);
+                $todopagoLog->log("message: ".var_export($e, true));
                 $order->sendOrderUpdateEmail(true, $message);
             }
 
@@ -350,8 +349,8 @@ public function lastStep($order_key, $answer_key){
             try{
                 $order->sendNewOrderEmail();
             }catch(Exception $e){
-                $this->_todopagoLog->log("catch : ".__METHOD__);
-                $this->_todopagoLog->log("message: ".var_export($e, true));
+                $todopagoLog->log("catch : ".__METHOD__);
+                $todopagoLog->log("message: ".var_export($e, true));
                 $order->sendOrderUpdateEmail(true, $message);
             }
 
@@ -365,20 +364,20 @@ public function lastStep($order_key, $answer_key){
 
             $order->save();
 
-			$payment = $order->getPayment();
-			$payment->setTransactionId($second_step['AuthorizationKey']);
-			$payment->setParentTransactionId($payment->getTransactionId());
+            $payment = $order->getPayment();
+            $payment->setTransactionId($second_step['AuthorizationKey']);
+            $payment->setParentTransactionId($payment->getTransactionId());
 
-			$payment->save();
+            $payment->save();
 
-			$order->save();
+            $order->save();
 
             /* Comento creación de Invoice */
             /*
-			$invoice = $order->prepareInvoice()
+            $invoice = $order->prepareInvoice()
                    ->setTransactionId(1)
                    ->addComment("Invoice created.")
-				   ->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+                   ->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
 
             $invoice->setGrandTotal($amountBuyer);
             $invoice->setBaseGrandTotal($amountBuyer);
@@ -386,14 +385,14 @@ public function lastStep($order_key, $answer_key){
             $invoice = $invoice->register()
                    ->pay();
 
-			Mage::getModel('core/resource_transaction')
-				->addObject($invoice)
-				->addObject($invoice->getOrder())
-				->save();
+            Mage::getModel('core/resource_transaction')
+                ->addObject($invoice)
+                ->addObject($invoice->getOrder())
+                ->save();
             */
 
-            $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlSuccess());
-            Mage_Core_Controller_Varien_Action::_redirect($this->_helper->getUrlSuccess(), array('_secure' => true));
+            $todopagoLog->log("redirige a: ".Mage::helper('modulodepago2/data')->getUrlSuccess());
+            Mage_Core_Controller_Varien_Action::_redirect(Mage::helper('modulodepago2/data')->getUrlSuccess(), array('_secure' => true));
         }
         //caso de transaccion no aprobada
         elseif($second_step['StatusCode'] != -1){
@@ -406,16 +405,16 @@ public function lastStep($order_key, $answer_key){
             } else{
                 $message = "Todo Pago: " . $second_step['StatusMessage'];
             }
-						$order->cancel();
-						$this->_todopagoLog->log("Orden cancelada");
+                        $order->cancel();
+                        $todopagoLog->log("Orden cancelada");
             $order->setState($state, $status, $message);
             $order->sendOrderUpdateEmail(true, $message);
             $order->save();
-            $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
-            Mage_Core_Controller_Varien_Action::_redirect($this->_helper->getUrlFailure(), array('_secure' => true));            }
+            $todopagoLog->log("redirige a: ".Mage::helper('modulodepago2/data')->getUrlFailure());
+            Mage_Core_Controller_Varien_Action::_redirect(Mage::helper('modulodepago2/data')->getUrlFailure(), array('_secure' => true));            }
         }
         catch(Exception $e){
-            $this->_todopagoLog->log("catch : ".__METHOD__);
+            $todopagoLog->log("catch : ".__METHOD__);
 
             $status = Mage::getStoreConfig('payment/modulodepago2/estado_denegada');
             if(empty($status)) $status = Mage::getStoreConfig('payment/todopago_avanzada/estado_denegada');
@@ -425,23 +424,24 @@ public function lastStep($order_key, $answer_key){
             } else{
                 $message = "Todo Pago (Exception): " . $e;
             }
-						$order->cancel();
-						$this->_todopagoLog->log("Orden cancelada");
+                        $order->cancel();
+                        $todopagoLog->log("Orden cancelada");
             $order->setState($state, $status, $message);
             $order->sendOrderUpdateEmail(true, $message);
             $order->save();
-            $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
-            Mage_Core_Controller_Varien_Action::_redirect($this->_helper->getUrlFailure(), array('_secure' => true));
+            $todopagoLog->log("redirige a: ".Mage::helper('modulodepago2/data')->getUrlFailure());
+            Mage_Core_Controller_Varien_Action::_redirect(Mage::helper('modulodepago2/data')->getUrlFailure(), array('_secure' => true));
         }
     }
 
     public function urlerrorAction(){
-        $this->_todopagoLog->log("init: ".__METHOD__);
+        $todopagoLog = Mage::helper('modulodepago2/todopagolog');
+        $todopagoLog->log("init: ".__METHOD__);
         // este m�to es al que me dva a devolder el gateway en caso que algo salga mal
         $order_id = $this->getRequest()->get('Order');
-        $this->_todopagoLog->log(__METHOD__." Modulo de pago - TodoPago ==> urlerror - orderid: ".$order_id);
+        $todopagoLog->log(__METHOD__." Modulo de pago - TodoPago ==> urlerror - orderid: ".$order_id);
         $answer = $this->getRequest()->get('Answer');
-        $this->_todopagoLog->log(__METHOD__." Modulo de pago - TodoPago ==> urlerror - AnswerKey: ".$answer);
+        $todopagoLog->log(__METHOD__." Modulo de pago - TodoPago ==> urlerror - AnswerKey: ".$answer);
 
         $order = new Mage_Sales_Model_Order ();
         $order->loadByIncrementId($order_id);
@@ -456,32 +456,34 @@ public function lastStep($order_key, $answer_key){
         } else{
             $message = "OPERATIONID: $order_id - Todo Pago: error en el pago del formulario";
         }
-				$order->cancel();
-				$this->_todopagoLog->log("Orden cancelada");
+                $order->cancel();
+                $todopagoLog->log("Orden cancelada");
         $order->setState($state, $status, $message);
         $order->save();
-        $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
-        Mage_Core_Controller_Varien_Action::_redirect($this->_helper->getUrlFailure(), array('_secure' => true));
+        $todopagoLog->log("redirige a: ".Mage::helper('modulodepago2/data')->getUrlFailure());
+        Mage_Core_Controller_Varien_Action::_redirect(Mage::helper('modulodepago2/data')->getUrlFailure(), array('_secure' => true));
     }
 
     private function redirect_first($cart_array){
-        $this->_todopagoLog->log("init: ".__METHOD__);
+        $todopagoLog = Mage::helper('modulodepago2/todopagolog');
+        $todopagoLog->log("init: ".__METHOD__);
         Mage_Core_Controller_Varien_Action::_redirect('modulodepago2/formulariocustom/insite',
           array('_secure' => true, 'amount'=>$cart_array['Amount'])
           );
     }
 
     protected function _get_new_order_state($status){
-        $this->_todopagoLog->log("init: ".__METHOD__);
+        $todopagoLog = Mage::helper('modulodepago2/todopagolog');
+        $todopagoLog->log("init: ".__METHOD__);
 
         if(version_compare(Mage::getVersion(), "1.5.0.0") == -1) {
             return $status;
         }
 
         $statuses  = Mage::getResourceModel('sales/order_status_collection')->joinStates()->addFieldToFilter('main_table.status', $status)->addFieldToFilter('is_default', 1)->getFirstItem();
-		if(count($statuses->getData()) == 0)
-			$statuses  = Mage::getResourceModel('sales/order_status_collection')->joinStates()->addFieldToFilter('main_table.status', $status)->getFirstItem();
-		$state = $statuses->getState();
+        if(count($statuses->getData()) == 0)
+            $statuses  = Mage::getResourceModel('sales/order_status_collection')->joinStates()->addFieldToFilter('main_table.status', $status)->getFirstItem();
+        $state = $statuses->getState();
 
         return $state;
     }
