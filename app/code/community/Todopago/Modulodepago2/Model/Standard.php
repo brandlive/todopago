@@ -11,6 +11,12 @@ class Todopago_Modulodepago2_Model_Standard extends Mage_Payment_Model_Method_Ab
 	protected $_canRefundInvoicePartial = true;
 	protected $_canCapture = true;
 	protected $_isInitializeNeeded = true;
+
+	protected $_todopagoLog;
+
+    public function __construct(){
+        $this->_todopagoLog = Mage::helper('modulodepago2/todopagolog');
+    }
 	
     public function initialize($paymentAction, $stateObject)
     {
@@ -32,7 +38,7 @@ class Todopago_Modulodepago2_Model_Standard extends Mage_Payment_Model_Method_Ab
     }
 
 	public function getOrderPlaceRedirectUrl(){
-		Mage::log("init :".__METHOD__);
+		$this->_todopagoLog->log("init :".__METHOD__);
 		return Mage::getUrl('modulodepago2/payment/getPayData', array(
 				'_secure' => true,
 				'tpcheckout' => $this->tpcheckout
@@ -45,7 +51,7 @@ class Todopago_Modulodepago2_Model_Standard extends Mage_Payment_Model_Method_Ab
 		$todopago_connector = Mage::helper('modulodepago2/connector')->getConnector();
 		
         $requestkey = $order->getTodopagoclave();
-		Mage::log("Modulo de pago - Todopago ==> DEVOLUCION");
+		$this->_todopagoLog->log("Modulo de pago - Todopago ==> DEVOLUCION");
 		
 		$returnData = array(
 			"Security" => Mage::helper('modulodepago2/ambiente')->get_security_code(),
@@ -53,10 +59,10 @@ class Todopago_Modulodepago2_Model_Standard extends Mage_Payment_Model_Method_Ab
 			"RequestKey" => $requestkey,
 			"AMOUNT" => number_format($amount,2,".",""),
 		); 
-		Mage::log("Modulo de pago - Todopago ==> Request: " . json_encode($returnData));
+		$this->_todopagoLog->log("Modulo de pago - Todopago ==> Request: " . json_encode($returnData));
         $result = $todopago_connector->returnRequest($returnData);
 		
-		Mage::log("Modulo de pago - Todopago ==> Response: " . json_encode($result));
+		$this->_todopagoLog->log("Modulo de pago - Todopago ==> Response: " . json_encode($result));
         if($result['StatusCode'] != 2011) {
             $errorCode = 'Invalid Data';
             $errorMsg = 'Error Processing the request';

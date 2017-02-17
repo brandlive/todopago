@@ -3,11 +3,13 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 
 	protected $order;
 	private $customer;
+	protected $_todopagoLog;
 
 	public function __construct($order, $customer){
 		$this->order = $order;
 		$this->customer = $customer;
-		Mage::log("constructor del CS: ".$this->order->getCustomerEmail());
+		$this->_todopagoLog = Mage::helper('modulodepago2/todopagolog');
+		$this->_todopagoLog->log("constructor del CS: ".$this->order->getCustomerEmail());
 	}
 
 	public function getDataCS(){
@@ -162,7 +164,7 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 			$return = $this->_sanitize_string($datasources);
 
 		}catch(Exception $e){
-			Mage::log("Modulo de pago - TodoPago ==> operation_id:  $this->order->getIncrementId() -
+			$this->_todopagoLog->log("Modulo de pago - TodoPago ==> operation_id:  $this->order->getIncrementId() -
 				no se pudo agregar el campo: Exception: $e");
 		}
 
