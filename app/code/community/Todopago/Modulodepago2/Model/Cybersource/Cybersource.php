@@ -36,8 +36,8 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
              $payDataOperacion ['CSBTEMAIL'] = $this->getField($this->order->getCustomerEmail());
         else $payDataOperacion ['CSBTEMAIL'] = $this->getField($billingAdress->getEmail());
 
-		$payDataOperacion ['CSBTFIRSTNAME'] = $this->getField($billingAdress->getFirstname());
-		$payDataOperacion ['CSBTLASTNAME'] = $this->getField($billingAdress->getLastname());
+		$payDataOperacion ['CSBTFIRSTNAME'] = Mage::helper('modulodepago2/data')->removeSpecialChars($this->getField($billingAdress->getFirstname()));
+ 		$payDataOperacion ['CSBTLASTNAME'] = Mage::helper('modulodepago2/data')->removeSpecialChars($this->getField($billingAdress->getLastname()));
 		$payDataOperacion ['CSBTPOSTALCODE'] = $this->getField($billingAdress->getPostcode());
 		$payDataOperacion ['CSBTPHONENUMBER'] = $this->getField($billingAdress->getTelephone());
 		$payDataOperacion ['CSBTSTATE'] =  strtoupper(substr($this->getField($billingAdress->getRegion()),0,1));

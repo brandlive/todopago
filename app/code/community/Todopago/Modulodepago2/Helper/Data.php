@@ -163,5 +163,15 @@ class Todopago_Modulodepago2_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 		return $cs_category;
 	}
+
+	public function removeSpecialChars($string){
+ 		$string = str_replace(' ', '-', $string);
+ 		$string = preg_replace('/[^A-Za-z0-9\-]/', '', $string); 
+ 		$string = preg_replace('/[0-9]+/', '', $string);
+ 		$string = str_replace('-', ' ', $string);
+ 		$string = rtrim($string);
+ 		return $string;
+ 	}
+	
 }
 	 
