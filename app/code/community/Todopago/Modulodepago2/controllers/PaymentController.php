@@ -372,6 +372,8 @@ public function lastStep($order_key, $answer_key){
 
 			$order->save();
 
+            /* Comento creación de Invoice */
+            /*
 			$invoice = $order->prepareInvoice()
                    ->setTransactionId(1)
                    ->addComment("Invoice created.")
@@ -387,7 +389,8 @@ public function lastStep($order_key, $answer_key){
 				->addObject($invoice)
 				->addObject($invoice->getOrder())
 				->save();
-
+            */
+            
             Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/success', array('_secure' => true));
         }
         //caso de transaccion no aprobada
