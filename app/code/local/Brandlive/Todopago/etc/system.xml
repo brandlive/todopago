@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<sections>
+		<payment>
+			<groups>
+				<modulodepago2 translate="label comment" module="paygate">
+					<fields>
+						<url_redirect_header translate="label">
+							<label>Redireccionamiento</label>
+							<frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+							<sort_order>61</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</url_redirect_header>
+						<url_failure translate="label">
+							<label>URL de redireccionamiento para pagos rechazados</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>62</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<comment>
+								<![CDATA[
+								Ejemplo: checkout/onepage/failure
+								]]>
+							</comment>
+						</url_failure>		
+						<url_success translate="label">
+							<label>URL de redireccionamiento para pagos aprobados</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>63</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<comment>
+								<![CDATA[
+								Ejemplo: checkout/onepage/success
+								]]>
+							</comment>
+						</url_success>	
+						<clean_cron_header translate="label">
+							<label>Cancelación de Ordenes</label>
+							<frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+							<sort_order>64</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</clean_cron_header>
+						<clean_cron translate="label">
+							<label>Habilitar cron de cancelación de ordenes</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>65</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+						</clean_cron>
+						<clean_cron_minutes translate="label">
+							<label>Cancelar Pedidos con mas de X Minutos.</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>66</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<comment>En minutos. Minimo: 5</comment>
+							<depends>
+								<clean_cron>1</clean_cron>
+							</depends>
+						</clean_cron_minutes>
+						<clean_cron_order_statuses translate="label">
+							<label>Estados de las Ordenes a verificar por el cron</label>
+							<frontend_type>multiselect</frontend_type>
+							<source_model>brandlive_todopago/system_config_source_order_newstatuses</source_model>
+							<sort_order>67</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>							
+							<comment>Statuses de state NEW</comment>
+							<depends>
+								<clean_cron>1</clean_cron>
+							</depends>
+						</clean_cron_order_statuses>
+						<clean_cron_collection_limit translate="label">
+							<backend_model>brandlive_todopago/system_validation_cleancroncollectionlimit</backend_model>
+							<label>Limite de ordenes a cancelar por cron</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>68</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<comment>Máximo: 50</comment>
+							<depends>
+								<clean_cron>1</clean_cron>
+							</depends>
+						</clean_cron_collection_limit>	
+						<clean_cron_log translate="label">
+							<label>Habilitar log de Cancelación de Ordenes</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>69</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>0</show_in_store>
+							<comment>
+								<![CDATA[
+								/var/log/todopago_clean_cron.log
+								]]>
+							</comment>
+							<depends>
+								<clean_cron>1</clean_cron>
+							</depends>
+						</clean_cron_log>			
+						<sort_order_header translate="label">
+	 							<label>Orden de Aparición en el Checkout</label>
+	 							<frontend_model>adminhtml/system_config_form_field_heading</frontend_model>
+	 							<sort_order>70</sort_order>
+	 							<show_in_default>1</show_in_default>
+	 							<show_in_website>1</show_in_website>
+	 							<show_in_store>1</show_in_store>
+ 						</sort_order_header>
+ 						<sort_order translate="label">
+ 								<label>Sort Order</label>
+ 								<frontend_type>text</frontend_type>
+ 								<sort_order>71</sort_order>
+ 								<show_in_default>1</show_in_default>
+ 								<show_in_website>1</show_in_website>
+ 								<show_in_store>1</show_in_store>
+ 						</sort_order>			
+					</fields>
+				</modulodepago2>
+			</groups>
+		</payment>
+	</sections>
+</config>

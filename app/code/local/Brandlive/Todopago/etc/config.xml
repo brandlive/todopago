@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+/**
+ *
+ * @category   Brandlive
+ * @package    Brandlive_Todopago
+ * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <modules>
+        <Brandlive_Todopago>
+            <version>1.1.0</version>
+        </Brandlive_Todopago>
+    </modules>
+    <global>
+    	<helpers>
+    		<brandlive_todopago>
+	        	<class>Brandlive_Todopago_Helper</class>
+	        </brandlive_todopago>
+            <modulodepago2>
+                <rewrite>
+                    <data>Brandlive_Todopago_Helper_Data</data>
+                </rewrite>
+            </modulodepago2>
+    	</helpers>
+    	<models>
+    		<brandlive_todopago>
+                <class>Brandlive_Todopago_Model</class>
+            </brandlive_todopago>
+	        <modulodepago2>
+	            <rewrite>
+	            	<system_config_source_processingstatuses>Brandlive_Todopago_Model_System_Config_Source_Processingstatuses</system_config_source_processingstatuses>
+	            </rewrite>
+	        </modulodepago2>
+	    </models>
+    </global>
+    <default>
+	    <payment>
+			<modulodepago2>
+				<url_success>checkout/onepage/success</url_success>
+				<url_failure>checkout/onepage/failure</url_failure>
+				<clean_cron>0</clean_cron>
+		        <clean_cron_minutes>10</clean_cron_minutes>
+		        <clean_cron_order_statuses>pending</clean_cron_order_statuses>
+		        <clean_cron_collection_limit>50</clean_cron_collection_limit>
+		        <clean_cron_log>1</clean_cron_log>
+			</modulodepago2>
+	    </payment>
+	</default>	
+	<crontab>
+        <jobs>
+            <brandlive_todopago_pending_payment_clean_orders>
+                <schedule>
+                    <cron_expr>*/10 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>brandlive_todopago/cron::cleanPendingPaymentOrders</model>
+                </run>
+            </brandlive_todopago_pending_payment_clean_orders>
+        </jobs>
+    </crontab>
+</config>

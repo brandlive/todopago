@@ -7,6 +7,7 @@ class Todopago_Modulodepago2_PaymentController extends Mage_Core_Controller_Fron
 
     public function __construct(){
         $this->_todopagoLog = Mage::helper('modulodepago2/todopagolog');
+        $this->_helper      = Mage::helper('modulodepago2/data');
     }
 
 	public function notificationAction() {
@@ -197,14 +198,14 @@ $order->setState("new", $status, $message);
 								$this->_todopagoLog->log("Orden cancelada");
                 $order->setState($state, $status, $message);
                 $order->save();
-                $this->_todopagoLog->log("Modulo de pago - TodoPago ==> redirige a: checkout/onepage/failure");
+                $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
                 //Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/failure', array('_secure' => true));
                 if(Mage::getStoreConfig('payment/modulodepago2/hibrido') == 1) {
                     $this->getResponse()->clearHeaders()->setHeader('HTTP/1.0', 400, true);
-                    $url = Mage::getUrl('checkout/onepage/failure', array('_secure' => true));
+                    $url = Mage::getUrl($this->_helper->getUrlFailure(), array('_secure' => true));
                     return $this->replyJson(array('url' => $url));
                 } else {
-                    $url = Mage::getUrl('checkout/onepage/failure', array(
+                    $url = Mage::getUrl($this->_helper->getUrlFailure(), array(
                         '_secure' => true
                     ));
                     $this->_redirectUrl($url);
@@ -231,14 +232,14 @@ $order->setState("new", $status, $message);
 						$this->_todopagoLog->log("Orden cancelada");
             $order->setState($state, $status, $message);
             $order->save();
-            $this->_todopagoLog->log("Modulo de pago - TodoPago ==> redirige a: checkout/onepage/failure");
+            $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
             //Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/failure', array('_secure' => true));
             if(Mage::getStoreConfig('payment/modulodepago2/hibrido') == 1) {
                 $this->getResponse()->clearHeaders()->setHeader('HTTP/1.0', 400, true);
-                $url = Mage::getUrl('checkout/onepage/failure', array('_secure' => true));
+                $url = Mage::getUrl($this->_helper->getUrlFailure(), array('_secure' => true));
                 return $this->replyJson(array('url' => $url));
             } else {
-                $url = Mage::getUrl('checkout/onepage/failure', array(
+                $url = Mage::getUrl($this->_helper->getUrlFailure(), array(
                     '_secure' => true
                 ));
                 $this->_redirectUrl($url);
@@ -390,8 +391,9 @@ public function lastStep($order_key, $answer_key){
 				->addObject($invoice->getOrder())
 				->save();
             */
-            
-            Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/success', array('_secure' => true));
+
+            $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlSuccess());
+            Mage_Core_Controller_Varien_Action::_redirect($this->_helper->getUrlSuccess(), array('_secure' => true));
         }
         //caso de transaccion no aprobada
         elseif($second_step['StatusCode'] != -1){
@@ -409,7 +411,8 @@ public function lastStep($order_key, $answer_key){
             $order->setState($state, $status, $message);
             $order->sendOrderUpdateEmail(true, $message);
             $order->save();
-            Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/failure', array('_secure' => true));            }
+            $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
+            Mage_Core_Controller_Varien_Action::_redirect($this->_helper->getUrlFailure(), array('_secure' => true));            }
         }
         catch(Exception $e){
             $this->_todopagoLog->log("catch : ".__METHOD__);
@@ -427,7 +430,8 @@ public function lastStep($order_key, $answer_key){
             $order->setState($state, $status, $message);
             $order->sendOrderUpdateEmail(true, $message);
             $order->save();
-            Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/failure', array('_secure' => true));
+            $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
+            Mage_Core_Controller_Varien_Action::_redirect($this->_helper->getUrlFailure(), array('_secure' => true));
         }
     }
 
@@ -456,7 +460,8 @@ public function lastStep($order_key, $answer_key){
 				$this->_todopagoLog->log("Orden cancelada");
         $order->setState($state, $status, $message);
         $order->save();
-        Mage_Core_Controller_Varien_Action::_redirect('checkout/onepage/failure', array('_secure' => true));
+        $this->_todopagoLog->log("redirige a: ".$this->_helper->getUrlFailure());
+        Mage_Core_Controller_Varien_Action::_redirect($this->_helper->getUrlFailure(), array('_secure' => true));
     }
 
     private function redirect_first($cart_array){
