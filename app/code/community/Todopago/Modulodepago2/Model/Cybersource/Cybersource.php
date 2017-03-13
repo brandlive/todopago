@@ -149,7 +149,7 @@ abstract class Todopago_Modulodepago2_Model_Cybersource_Cybersource extends Mage
 
 		}
 		$payDataOperacion ['CSITPRODUCTCODE'] = join('#', $productcode_array);
-		$payDataOperacion ['CSITPRODUCTDESCRIPTION'] = join("#", $description_array);
+		$payDataOperacion ['CSITPRODUCTDESCRIPTION'] = join("#", $name_array);
 		$payDataOperacion ['CSITPRODUCTNAME'] = join("#", $name_array);
 		$payDataOperacion ['CSITPRODUCTSKU'] = join("#", $sku_array);
 		$payDataOperacion ['CSITTOTALAMOUNT'] = join("#", $totalamount_array);
