@@ -3,6 +3,8 @@ class Todopago_Modulodepago2_Model_Cybersource_Retail extends Todopago_Modulodep
 
     protected function completeCSVertical(){
         $payDataOperacion = array();
+        //Llamo al metodo de billingAdress para capturar el nombre del usuario
+        $billingAdress = $this->order->getBillingAddress();
         $shippingAdress = $this->order->getShippingAddress();
         $payDataOperacion ['CSSTCITY'] = $this->getField($shippingAdress->getCity());
         $payDataOperacion ['CSSTCOUNTRY'] = $this->getField($shippingAdress->getCountry());
@@ -12,8 +14,8 @@ class Todopago_Modulodepago2_Model_Cybersource_Retail extends Todopago_Modulodep
              $payDataOperacion ['CSSTEMAIL'] = $this->getField($this->order->getCustomerEmail());
         else $payDataOperacion ['CSSTEMAIL'] = $this->getField($shippingAdress->getEmail());  
 
-        $payDataOperacion ['CSSTFIRSTNAME'] = Mage::helper('modulodepago2/data')->removeSpecialChars($this->getField($shippingAdress->getFirstname()));
-        $payDataOperacion ['CSSTLASTNAME'] = Mage::helper('modulodepago2/data')->removeSpecialChars($this->getField($shippingAdress->getLastname()));
+        $payDataOperacion ['CSSTFIRSTNAME'] = Mage::helper('modulodepago2/data')->removeSpecialChars($this->getField($billingAdress->getFirstname()));
+        $payDataOperacion ['CSSTLASTNAME'] = Mage::helper('modulodepago2/data')->removeSpecialChars($this->getField($billingAdress->getLastname()));
         $payDataOperacion ['CSSTPHONENUMBER'] = $this->getField($shippingAdress->getTelephone());
         if(!$payDataOperacion ['CSSTPHONENUMBER'] || strlen($payDataOperacion ['CSSTPHONENUMBER']) < 6) $payDataOperacion ['CSSTPHONENUMBER'] = '111111111';
         $payDataOperacion ['CSSTPOSTALCODE'] = $this->getField($shippingAdress->getPostcode());
